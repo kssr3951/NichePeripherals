@@ -1,0 +1,6 @@
+itemGroup.NichePeripherals=Niche Peripherals
+tile.nicheperipherals_extensionCube.name=拡張キューブ
+tile.nicheperipherals_allDirectionalComparator.name=全方位コンパレータ
+tile.nicheperipherals_metaPlacer.name=メタプレーサ
+tile.nicheperipherals_metaScanner.name=メタスキャナ
+tile.nicheperipherals_modemController.name=モデムコントローラ

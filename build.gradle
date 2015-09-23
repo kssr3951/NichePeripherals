@@ -1,0 +1,15 @@
+tasks.withType(Jar) {
+  compileJava.options.encoding = 'UTF-8'
+  compileApiJava.options.encoding = 'UTF-8'
+}
+
+sourceSets.main {
+    java.srcDirs project.projectDir.name
+    resources.srcDirs project.projectDir.name
+}
+version = "1.0"
+dependencies {
+  compile fileTree(dir: 'lib', include: 'ComputerCraft1.74.jar')
+}
+
+// dependencies { compile project(':ProjectName')}

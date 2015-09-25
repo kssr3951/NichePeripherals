@@ -19,27 +19,12 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 public class BlockAllDirectionalComparator extends BlockEx {
 
     public BlockAllDirectionalComparator(Material material) {
-		super(material);
-	}
+        super(material);
+    }
 
-	// =====================================================================================
-	// Blockのオーバーライド
-	// =====================================================================================
-	@Override
-	public boolean renderAsNormalBlock(){
-		return false;
-	}
-
-	@Override
-	public boolean isOpaqueCube() {
-		return false;
-	}
-
-	@Override
-	public int damageDropped(int metadata) {
-		return metadata;
-	}
-	
+    // =====================================================================================
+    // Blockのオーバーライド
+    // =====================================================================================
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister)

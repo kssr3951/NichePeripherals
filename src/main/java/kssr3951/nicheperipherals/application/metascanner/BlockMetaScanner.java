@@ -18,28 +18,13 @@ import net.minecraft.client.renderer.texture.IIconRegister;
  */
 public class BlockMetaScanner extends BlockEx {
 
-	public BlockMetaScanner(Material material) {
-		super(material);
-	}
+    public BlockMetaScanner(Material material) {
+        super(material);
+    }
 
-	// =====================================================================================
-	// Blockのオーバーライド
-	// =====================================================================================
-	@Override
-	public boolean renderAsNormalBlock(){
-		return false;
-	}
-
-	@Override
-	public boolean isOpaqueCube() {
-		return false;
-	}
-
-	@Override
-	public int damageDropped(int metadata) {
-		return metadata;
-	}
-	
+    // =====================================================================================
+    // Blockのオーバーライド
+    // =====================================================================================
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister)

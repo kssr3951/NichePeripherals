@@ -21,76 +21,76 @@ import net.minecraft.util.Facing;
  */
 public class PeripheralMetaScannerCommand2_Scan implements ITurtleCommand {
 
-	private TurtleSide side;
-	private int dir;
+    private TurtleSide side;
+    private int dir;
 
-	private String scannedBlockName;
-	private int scannedMetadata;
+    private String scannedBlockName;
+    private int scannedMetadata;
 
-	private String scanCode;
+    private String scanCode;
 
-	public PeripheralMetaScannerCommand2_Scan(TurtleSide side, int dir) {
-		this.side = side;
-		this.dir = dir;
-	}
+    public PeripheralMetaScannerCommand2_Scan(TurtleSide side, int dir) {
+        this.side = side;
+        this.dir = dir;
+    }
 
-	public String getScannedBlockName() {
-		return scannedBlockName;
-	}
+    public String getScannedBlockName() {
+        return scannedBlockName;
+    }
 
-	public int getScannedMetadata() {
-		return scannedMetadata;
-	}
+    public int getScannedMetadata() {
+        return scannedMetadata;
+    }
 
-	public String getScanCode() {
-		return scanCode;
-	}
+    public String getScanCode() {
+        return scanCode;
+    }
 
-	@Override
-	public TurtleCommandResult execute(ITurtleAccess turtle) {
+    @Override
+    public TurtleCommandResult execute(ITurtleAccess turtle) {
 
-		int newX = turtle.getPosition().posX + Facing.offsetsXForSide[this.dir];
-		int newY = turtle.getPosition().posY + Facing.offsetsYForSide[this.dir];
-		int newZ = turtle.getPosition().posZ + Facing.offsetsZForSide[this.dir];
-		Block block = turtle.getWorld().getBlock(newX, newY, newZ);
+        int newX = turtle.getPosition().posX + Facing.offsetsXForSide[this.dir];
+        int newY = turtle.getPosition().posY + Facing.offsetsYForSide[this.dir];
+        int newZ = turtle.getPosition().posZ + Facing.offsetsZForSide[this.dir];
+        Block block = turtle.getWorld().getBlock(newX, newY, newZ);
 
-		System.out.println("  **** block () : " + Block.blockRegistry.getNameForObject(block));
-		
-		int metadata = -1;
-		System.out.println("Blocks.noteblock = " + Blocks.noteblock.getUnlocalizedName());
-		System.out.println("  this block     = " + block.getUnlocalizedName());
-		System.out.println("    (use equals) : " + block.equals(Blocks.noteblock));
-		System.out.println("    (use ==    ) : " + (block == Blocks.noteblock));
-		System.out.println("cable            = " + dan200.computercraft.ComputerCraft.Blocks.cable.getUnlocalizedName());
-		if (block.equals(Blocks.noteblock)) {
-			System.out.println("    this is a noteblock");
-			// 音ブロックだけ特別に
+        System.out.println("  **** block () : " + Block.blockRegistry.getNameForObject(block));
+        
+        int metadata = -1;
+        System.out.println("Blocks.noteblock = " + Blocks.noteblock.getUnlocalizedName());
+        System.out.println("  this block     = " + block.getUnlocalizedName());
+        System.out.println("    (use equals) : " + block.equals(Blocks.noteblock));
+        System.out.println("    (use ==    ) : " + (block == Blocks.noteblock));
+        System.out.println("cable            = " + dan200.computercraft.ComputerCraft.Blocks.cable.getUnlocalizedName());
+        if (block.equals(Blocks.noteblock)) {
+            System.out.println("    this is a noteblock");
+            // 音ブロックだけ特別に
             TileEntityNote tileentitynote = (TileEntityNote)turtle.getWorld().getTileEntity(newX, newY, newZ);
             if (tileentitynote != null) {
-            	
+                
                 metadata = tileentitynote.note;
                 System.out.println("      tile is not null / note = " + tileentitynote.note);
             } else {
-            	System.out.println("      tile is null");
+                System.out.println("      tile is null");
             }
-		} else {
-			// 他はメタデータ
-			metadata = turtle.getWorld().getBlockMetadata(newX, newY, newZ);
-		}
+        } else {
+            // 他はメタデータ
+            metadata = turtle.getWorld().getBlockMetadata(newX, newY, newZ);
+        }
 
-		System.out.println("[NichePeripherals scan]block=" + block.getUnlocalizedName() + " /metadata=" + metadata);
-		scanCode = PeripheralMetaScanner.getHashForDetectorTurtle(block, metadata);
+        System.out.println("[NichePeripherals scan]block=" + block.getUnlocalizedName() + " /metadata=" + metadata);
+        scanCode = PeripheralMetaScanner.getHashForDetectorTurtle(block, metadata);
 
-		if(turtle.getWorld().isAirBlock(newX, newY, newZ)) {
-			return TurtleCommandResult.failure("no scan target");
-		}
+        if(turtle.getWorld().isAirBlock(newX, newY, newZ)) {
+            return TurtleCommandResult.failure("no scan target");
+        }
 
-		if(side == TurtleSide.Left) {
-			turtle.playAnimation(TurtleAnimation.SwingLeftTool);
-		} else {
-			turtle.playAnimation(TurtleAnimation.SwingRightTool);
-		}
+        if(side == TurtleSide.Left) {
+            turtle.playAnimation(TurtleAnimation.SwingLeftTool);
+        } else {
+            turtle.playAnimation(TurtleAnimation.SwingRightTool);
+        }
 
-		return TurtleCommandResult.success();
-	}
+        return TurtleCommandResult.success();
+    }
 }

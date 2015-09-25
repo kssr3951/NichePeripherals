@@ -18,86 +18,86 @@ import dan200.computercraft.api.turtle.TurtleSide;
  */
 public class PeripheralMetaScannerHosted implements IPeripheral {
 
-	private ITurtleAccess turtle;
-	private TurtleSide side;
-	private static final int DIR_UP = 1;
-	private static final int DIR_DOWN = 0;
+    private ITurtleAccess turtle;
+    private TurtleSide side;
+    private static final int DIR_UP = 1;
+    private static final int DIR_DOWN = 0;
 
-	public PeripheralMetaScannerHosted(ITurtleAccess turtle, TurtleSide side) {
-		this.turtle = turtle;
-		this.side = side;
-	}
+    public PeripheralMetaScannerHosted(ITurtleAccess turtle, TurtleSide side) {
+        this.turtle = turtle;
+        this.side = side;
+    }
 
-	@Override
-	public String getType() {
-		return "metaScanner";
-	}
+    @Override
+    public String getType() {
+        return "metaScanner";
+    }
 
-	@Override
-	public void attach(IComputerAccess computer) {
-	}
+    @Override
+    public void attach(IComputerAccess computer) {
+    }
 
-	@Override
-	public void detach(IComputerAccess computer) {
-	}
+    @Override
+    public void detach(IComputerAccess computer) {
+    }
 
-	@Override
-	public boolean equals(IPeripheral other) {
-		return false;
-	}
+    @Override
+    public boolean equals(IPeripheral other) {
+        return false;
+    }
 
-	private static final String[] METHOD_NAMES = new String[] { "getName", "compass", "scan", "scanUp", "scanDown" };
-	@Override
-	public String[] getMethodNames() {
-		return METHOD_NAMES;
-	}
+    private static final String[] METHOD_NAMES = new String[] { "getName", "compass", "scan", "scanUp", "scanDown" };
+    @Override
+    public String[] getMethodNames() {
+        return METHOD_NAMES;
+    }
 
-	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
-			throws LuaException, InterruptedException {
+    @Override
+    public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
+            throws LuaException, InterruptedException {
 
-		if (method < 0 || (METHOD_NAMES.length - 1)  < method) {
-			return new Object[] {false, "unknown command" };
-		}
-		if ("getName".equals(METHOD_NAMES[method])) {
-			return new Object[] { "Meta Scanner" };
-		}
-		if ("compass".equals(METHOD_NAMES[method])) {
-			return this.compassCommand(context, this.turtle.getDirection());
-		}
-		if ("scan".equals(METHOD_NAMES[method])) {
-			return this.scanCommand(context, this.turtle.getDirection());
-		}
-		if ("scanUp".equals(METHOD_NAMES[method])) {
-			return this.scanCommand(context, DIR_UP);
-		}
-		if ("scanDown".equals(METHOD_NAMES[method])) {
-			return this.scanCommand(context, DIR_DOWN);
-		}
-		return new Object[] {false, "unknown command" };
-	}
+        if (method < 0 || (METHOD_NAMES.length - 1)  < method) {
+            return new Object[] {false, "unknown command" };
+        }
+        if ("getName".equals(METHOD_NAMES[method])) {
+            return new Object[] { "Meta Scanner" };
+        }
+        if ("compass".equals(METHOD_NAMES[method])) {
+            return this.compassCommand(context, this.turtle.getDirection());
+        }
+        if ("scan".equals(METHOD_NAMES[method])) {
+            return this.scanCommand(context, this.turtle.getDirection());
+        }
+        if ("scanUp".equals(METHOD_NAMES[method])) {
+            return this.scanCommand(context, DIR_UP);
+        }
+        if ("scanDown".equals(METHOD_NAMES[method])) {
+            return this.scanCommand(context, DIR_DOWN);
+        }
+        return new Object[] {false, "unknown command" };
+    }
 
-	private Object[] compassCommand(ILuaContext context, int dir)
-			throws LuaException, InterruptedException {
-		PeripheralMetaScannerCommand1_Compass cmd = new PeripheralMetaScannerCommand1_Compass(dir);
-		Object[] rslt = this.turtle.executeCommand(context, cmd);
-		Object[] ret = new Object[rslt.length + 1];
-		for (int i = 0; i < rslt.length; i++) {
-			ret[i] = rslt[i];
-		}
-		ret[rslt.length + 0] = cmd.getCompassCode();
-		return ret;
-	}
+    private Object[] compassCommand(ILuaContext context, int dir)
+            throws LuaException, InterruptedException {
+        PeripheralMetaScannerCommand1_Compass cmd = new PeripheralMetaScannerCommand1_Compass(dir);
+        Object[] rslt = this.turtle.executeCommand(context, cmd);
+        Object[] ret = new Object[rslt.length + 1];
+        for (int i = 0; i < rslt.length; i++) {
+            ret[i] = rslt[i];
+        }
+        ret[rslt.length + 0] = cmd.getCompassCode();
+        return ret;
+    }
 
-	private Object[] scanCommand(ILuaContext context, int dir)
-			throws LuaException, InterruptedException {
-		PeripheralMetaScannerCommand2_Scan cmd = new PeripheralMetaScannerCommand2_Scan(this.side, dir);
-		Object[] rslt = this.turtle.executeCommand(context, cmd);
-		Object[] ret = new Object[rslt.length + 1];
-		for (int i = 0; i < rslt.length; i++) {
-			ret[i] = rslt[i];
-		}
-		ret[rslt.length + 0] = cmd.getScanCode();
-		return ret;
-	}
+    private Object[] scanCommand(ILuaContext context, int dir)
+            throws LuaException, InterruptedException {
+        PeripheralMetaScannerCommand2_Scan cmd = new PeripheralMetaScannerCommand2_Scan(this.side, dir);
+        Object[] rslt = this.turtle.executeCommand(context, cmd);
+        Object[] ret = new Object[rslt.length + 1];
+        for (int i = 0; i < rslt.length; i++) {
+            ret[i] = rslt[i];
+        }
+        ret[rslt.length + 0] = cmd.getScanCode();
+        return ret;
+    }
 }

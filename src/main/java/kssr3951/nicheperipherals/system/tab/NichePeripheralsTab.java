@@ -17,20 +17,20 @@ import net.minecraft.item.Item;
  */
 public class NichePeripheralsTab extends CreativeTabs {
 
-	private Item item;
-	
-	public NichePeripheralsTab(String lable) {
-		super(lable);
-		this.item = Item.getItemFromBlock(Blocks.stone);
-	}
+    private Item item;
+    
+    public NichePeripheralsTab(String lable) {
+        super(lable);
+        this.item = Item.getItemFromBlock(Blocks.stone);
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public Item getTabIconItem() {
-		return this.item;
-	}
-	
-	public void setTabIconItem(Item item) {
-		this.item = item;
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public Item getTabIconItem() {
+        return this.item;
+    }
+    
+    public void setTabIconItem(Item item) {
+        this.item = item;
+    }
 }

@@ -1,10 +1,5 @@
 package kssr3951.nicheperipherals.application.modemcontroller;
 
-import dan200.computercraft.api.turtle.ITurtleAccess;
-import dan200.computercraft.api.turtle.TurtleCommandResult;
-import dan200.computercraft.api.turtle.TurtleSide;
-import dan200.computercraft.api.turtle.TurtleUpgradeType;
-import dan200.computercraft.api.turtle.TurtleVerb;
 import kssr3951.nicheperipherals.system.peripheral.PeripheralEx;
 
 /**
@@ -18,20 +13,6 @@ import kssr3951.nicheperipherals.system.peripheral.PeripheralEx;
  */
 public class PeripheralModemController extends PeripheralEx {
 
-	public PeripheralModemController() {
-	}
-	
-	@Override
-	public TurtleUpgradeType getType() {
-		return  TurtleUpgradeType.Peripheral;
-	}
-
-	@Override
-	public TurtleCommandResult useTool(ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, int direction) {
-		return null;
-	}
-
-	@Override
-	public void update(ITurtleAccess turtle, TurtleSide side) {
-	}
+    public PeripheralModemController() {
+    }
 }

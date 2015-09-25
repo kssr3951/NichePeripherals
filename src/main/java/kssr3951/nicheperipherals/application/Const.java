@@ -12,12 +12,12 @@ import kssr3951.nicheperipherals.ModInfo;
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
 public class Const {
-	public static final String SIDE_TEXT_FRONT  = "front";
-	public static final String SIDE_TEXT_BACK   = "back";
-	public static final String SIDE_TEXT_LEFT   = "left";
-	public static final String SIDE_TEXT_RIGHT  = "right";
-	public static final String SIDE_TEXT_TOP    = "top";
-	public static final String SIDE_TEXT_BOTTOM = "bottom";
-	
-	public static final String TEXTURE_PREFIX = ModInfo.ID.toLowerCase() + ":";
+    public static final String SIDE_TEXT_FRONT  = "front";
+    public static final String SIDE_TEXT_BACK   = "back";
+    public static final String SIDE_TEXT_LEFT   = "left";
+    public static final String SIDE_TEXT_RIGHT  = "right";
+    public static final String SIDE_TEXT_TOP    = "top";
+    public static final String SIDE_TEXT_BOTTOM = "bottom";
+    
+    public static final String TEXTURE_PREFIX = ModInfo.ID.toLowerCase() + ":";
 }

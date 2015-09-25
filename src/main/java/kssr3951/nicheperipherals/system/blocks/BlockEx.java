@@ -27,105 +27,104 @@ import net.minecraft.world.World;
  */
 abstract public class BlockEx extends Block {
 
-	private int renderId = -1;
-	private Block nakamiBlock;
-	private Block sotogawaBlock;
-	private String blockName;
-	
-	/** レシピの（材料の）情報。ブロック破壊時に返すアイテムを指定する。 */
-	private ItemStack[] ingredients;
+    private int renderId = -1;
+    private Block sotogawaBlock;
+    private String blockName;
+    
+    /** レシピの（材料の）情報。ブロック破壊時に返すアイテムを指定する。 */
+    private ItemStack[] ingredients;
 
-	@SideOnly(Side.CLIENT)
+    @SideOnly(Side.CLIENT)
     protected IIcon peripheralIcon;
  
-	@SuppressWarnings("null")
-	public static BlockEx newInstance(@SuppressWarnings("rawtypes") Class blockExClass, String blockName, CreativeTabs creativeTabs, String textureName, Block nakamiBlock, Block sotogawaBlock) {
-		BlockEx blockEx = null;
-		try {
-			@SuppressWarnings({ "rawtypes", "unchecked" })
-			Constructor ct = blockExClass.getConstructor(Material.class);
-			blockEx = (BlockEx) ct.newInstance(Material.glass);
-		} catch (InstantiationException e) {
-			blockEx.setRenderId(-999);
-			e.printStackTrace();
-			return null;
-		} catch (IllegalAccessException e) {
-			blockEx.setRenderId(-999);
-			e.printStackTrace();
-			return null;
-		} catch (NoSuchMethodException e) {
-			blockEx.setRenderId(-999);
-			e.printStackTrace();
-			return null;
-		} catch (SecurityException e) {
-			blockEx.setRenderId(-999);
-			e.printStackTrace();
-			return null;
-		} catch (IllegalArgumentException e) {
-			blockEx.setRenderId(-999);
-			e.printStackTrace();
-			return null;
-		} catch (InvocationTargetException e) {
-			blockEx.setRenderId(-999);
-			e.printStackTrace();
-			return null;
-		}
-		blockEx.blockName = blockName;
-		blockEx.nakamiBlock = nakamiBlock;
-		blockEx.sotogawaBlock = sotogawaBlock;
-		blockEx.setBlockName(blockName);
-		blockEx.setHardness(0.3F);
-		blockEx.setStepSound(soundTypeGlass);
-		blockEx.setCreativeTab(creativeTabs);
-		blockEx.setBlockTextureName(textureName);
-		return blockEx;
-	}
-	
-	protected BlockEx(Material material) {
-		super(material);
-	}
-	
-	public void setRenderId(int renderId) {
-		this.renderId = renderId;
-	}
+    public static BlockEx newInstance(@SuppressWarnings("rawtypes") Class blockExClass, String blockName, CreativeTabs creativeTabs, String textureName, Block sotogawaBlock) {
+        BlockEx blockEx = null;
+        try {
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            Constructor ct = blockExClass.getConstructor(Material.class);
+            blockEx = (BlockEx) ct.newInstance(Material.glass);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return null;
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
+        }
+        blockEx.blockName = blockName;
+        blockEx.sotogawaBlock = sotogawaBlock;
+        blockEx.setBlockName(blockName);
+        blockEx.setHardness(0.3F);
+        blockEx.setStepSound(soundTypeGlass);
+        blockEx.setCreativeTab(creativeTabs);
+        blockEx.setBlockTextureName(textureName);
+        return blockEx;
+    }
+    
+    protected BlockEx(Material material) {
+        super(material);
+    }
+    
+    public void setRenderId(int renderId) {
+        this.renderId = renderId;
+    }
 
-	public final Block getNakamiBlock() {
-		return this.nakamiBlock;
-	}
-	
-	public final Block getSotogawaBlock() {
-		return this.sotogawaBlock;
-	}
-	
-	public final String getBlockName() {
-		return this.blockName;
-	}
-	
-	public final IIcon getPeripheralIcon() {
-		return this.peripheralIcon;
-	}
-	
-	public void setIngredients(ItemStack[] ingredients) {
-		this.ingredients = ingredients;
-	}
-	// =====================================================================================
-	// Blockのオーバーライド
-	// =====================================================================================
-	@Override
-	public final int getRenderType() {
-		return this.renderId;
-	}
-	@Override
-	public final boolean canHarvestBlock(EntityPlayer player, int meta) {
-		return false;
-	}
-	@Override
+    public final Block getSotogawaBlock() {
+        return this.sotogawaBlock;
+    }
+    
+    public final String getBlockName() {
+        return this.blockName;
+    }
+    
+    public final IIcon getPeripheralIcon() {
+        return this.peripheralIcon;
+    }
+    
+    public void setIngredients(ItemStack[] ingredients) {
+        this.ingredients = ingredients;
+    }
+    // =====================================================================================
+    // Blockのオーバーライド
+    // =====================================================================================
+    @Override
+    public final boolean renderAsNormalBlock(){
+        return false;
+    }
+    @Override
+    public final boolean isOpaqueCube() {
+        return false;
+    }
+    @Override
+    public final int damageDropped(int metadata) {
+        return metadata;
+    }
+    @Override
+    public final int getRenderType() {
+        return this.renderId;
+    }
+    @Override
+    public final boolean canHarvestBlock(EntityPlayer player, int meta) {
+        return false;
+    }
+    @Override
     public final void breakBlock(World world, int x, int y, int z, Block block, int metadata)
     {
-		if (null == this.ingredients) {
-			return;
-		}
-		Random random = new Random(System.currentTimeMillis());
+        if (null == this.ingredients) {
+            return;
+        }
+        Random random = new Random(System.currentTimeMillis());
         for (int i1 = 0; i1 < ingredients.length; i1++)
         {
             ItemStack itemstack = new ItemStack(ingredients[i1].getItem(), ingredients[i1].stackSize, ingredients[i1].getItemDamage());

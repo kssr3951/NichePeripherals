@@ -15,42 +15,41 @@ import dan200.computercraft.api.turtle.TurtleCommandResult;
  */
 public class PeripheralMetaScannerCommand1_Compass implements ITurtleCommand {
 
-	private int compassCode;
-	private int dir;
+    private int compassCode;
+    private int dir;
 
-	public PeripheralMetaScannerCommand1_Compass(int dir) {
-		this.dir = dir;
-	}
+    public PeripheralMetaScannerCommand1_Compass(int dir) {
+        this.dir = dir;
+    }
 
-	public int getCompassCode() {
-		return this.compassCode;
-	}
-	
-	@Override
-	public TurtleCommandResult execute(ITurtleAccess givenTurtle) {
-		
-		switch(this.dir) {
-		case 2:
-			// 北(North)
-			this.compassCode = 0;
-			break;
-		case 5:
-			// 東(East)
-			this.compassCode = 1;
-			break;
-		case 3:
-			// 南(South)
-			this.compassCode = 2;
-			break;
-		case 4:
-			// 西(West)
-			this.compassCode = 3;
-			break;
-		default:
-			return TurtleCommandResult.failure("Something happened");
-		}
-		
-		// 処理成功
-		return TurtleCommandResult.success();
-	}
+    public int getCompassCode() {
+        return this.compassCode;
+    }
+    
+    @Override
+    public TurtleCommandResult execute(ITurtleAccess givenTurtle) {
+        
+        switch(this.dir) {
+        case 2:
+            // 北(North)
+            this.compassCode = 0;
+            break;
+        case 5:
+            // 東(East)
+            this.compassCode = 1;
+            break;
+        case 3:
+            // 南(South)
+            this.compassCode = 2;
+            break;
+        case 4:
+            // 西(West)
+            this.compassCode = 3;
+            break;
+        default:
+            return TurtleCommandResult.failure("Something happened");
+        }
+        // 処理成功
+        return TurtleCommandResult.success();
+    }
 }

@@ -14,30 +14,30 @@ import kssr3951.nicheperipherals.system.blocks.BlockEx;
  */
 public abstract class RenderEx implements ISimpleBlockRenderingHandler {
 
-	protected int renderId;
-	protected BlockEx subjectBlock;
-	
-	public static RenderEx newInstance(@SuppressWarnings("rawtypes") Class renderExClass, int renderId, BlockEx subjectBlock) {
-		RenderEx renderEx;
-		try {
-			renderEx = (RenderEx)renderExClass.newInstance();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-			return null;
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			return null;
-		}
-		renderEx.renderId = renderId;
-		renderEx.subjectBlock = subjectBlock;
-		return renderEx;
-	}
+    protected int renderId;
+    protected BlockEx subjectBlock;
+    
+    public static RenderEx newInstance(@SuppressWarnings("rawtypes") Class renderExClass, int renderId, BlockEx subjectBlock) {
+        RenderEx renderEx;
+        try {
+            renderEx = (RenderEx)renderExClass.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+        renderEx.renderId = renderId;
+        renderEx.subjectBlock = subjectBlock;
+        return renderEx;
+    }
 
-	// =====================================================================================
-	// ISimpleBlockRenderingHandlerの実装
-	// =====================================================================================
-	@Override
-	public final int getRenderId() {
-		return this.renderId;
-	}
+    // =====================================================================================
+    // ISimpleBlockRenderingHandlerの実装
+    // =====================================================================================
+    @Override
+    public final int getRenderId() {
+        return this.renderId;
+    }
 }

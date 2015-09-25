@@ -14,25 +14,7 @@ import net.minecraft.block.material.Material;
  */
 public class BlockExtensionCube extends BlockEx {
 
-	public BlockExtensionCube(Material material) {
-		super(material);
-	}
-
-	// =====================================================================================
-	// Blockのオーバーライド
-	// =====================================================================================
-	@Override
-	public boolean renderAsNormalBlock(){
-		return false;
-	}
-
-	@Override
-	public boolean isOpaqueCube() {
-		return false;
-	}
-
-	@Override
-	public int damageDropped(int metadata) {
-		return metadata;
-	}
+    public BlockExtensionCube(Material material) {
+        super(material);
+    }
 }

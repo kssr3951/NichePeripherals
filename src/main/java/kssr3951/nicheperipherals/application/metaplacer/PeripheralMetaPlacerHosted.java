@@ -54,7 +54,8 @@ public class PeripheralMetaPlacerHosted implements IPeripheral {
         return false;
     }
 
-    private static final String[] METHOD_NAMES = new String[] { "getName", "compass", "scan", "scanUp", "scanDown", "place", "placeUp","placeDown" };
+    private static final String[] METHOD_NAMES = 
+            new String[] { "getName", "compass", "scan", "scanUp", "scanDown", "place", "placeUp", "placeDown", "ccPlace", "ccPlaceUp", "ccPlaceDown"  };
     @Override
     public String[] getMethodNames() {
         return METHOD_NAMES;
@@ -90,6 +91,17 @@ public class PeripheralMetaPlacerHosted implements IPeripheral {
         if ("placeDown".equals(METHOD_NAMES[method])) {
             return this.exPlaceCommand(context, DIR_DOWN, arguments);
         }
+
+        if ("ccPlace".equals(METHOD_NAMES[method])) {
+            return this.turtle.executeCommand(context, new PeripheralMetaPlacerCommand0_CcPlace(InteractDirection.Forward, arguments));
+        }
+        if ("ccPlaceUp".equals(METHOD_NAMES[method])) {
+            return this.turtle.executeCommand(context, new PeripheralMetaPlacerCommand0_CcPlace(InteractDirection.Up, arguments));
+        }
+        if ("ccPlaceDown".equals(METHOD_NAMES[method])) {
+            return this.turtle.executeCommand(context, new PeripheralMetaPlacerCommand0_CcPlace(InteractDirection.Down, arguments));
+        }
+        
         return new Object[] {false, "unknown command" };
     }
 

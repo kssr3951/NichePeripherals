@@ -60,12 +60,21 @@ public class NichePeripherals {
     @SidedProxy(clientSide = ModInfo.PROXY_LOCATION + "ProxyClient", serverSide = ModInfo.PROXY_LOCATION + "ProxyServer")
     public static ProxyCommon proxy;
 
-    private static final String modName_CC = "ComputerCraft";
+    // ComputerCraftとの連携
+    private static final String MODNAME_CC = "ComputerCraft";
     public static boolean dependency_CC = false;
-    public static Item cc_cable;
-    private static Item cc_pocketComputer;
-    public static Block cc_turtle;
-
+    
+    // BuildCraftとの連携（任意）
+    private static final String MODNAME_BUILDCRAFT_CORE = "BuildCraft|Core";
+    public static boolean dependency_BuildCraft_Core = false;
+    
+    public static class Dependency {
+        public static Item cc_cable;
+        public static Item cc_pocketComputer;
+        public static Block bc_blockConstructionMarker;
+        public static Item bc_itemConstructionMarker;
+    }
+    
     private static final String extendedBlocksName = "NichePeripheralsExtendedBlocks";
     private static NichePeripheralsTab creativeTab;
     private static int PID_ALL_DIRECTIONAL_COMPARATOR;
@@ -108,8 +117,11 @@ public class NichePeripherals {
         // ================================================================
         // dependencies
         // ================================================================
-        if (Loader.isModLoaded(modName_CC)) {
+        if (Loader.isModLoaded(MODNAME_CC)) {
             dependency_CC = true;
+        }
+        if (Loader.isModLoaded(MODNAME_BUILDCRAFT_CORE)) {
+            dependency_BuildCraft_Core = true;
         }
     }
 
@@ -118,10 +130,13 @@ public class NichePeripherals {
         // ================================================================
         // dependencies
         // ================================================================
-        if(dependency_CC) {
-            cc_cable = GameRegistry.findItem(modName_CC, "CC-Cable");
-            cc_turtle = GameRegistry.findBlock(modName_CC, "CC-Turtle");
-            cc_pocketComputer = GameRegistry.findItem(modName_CC, "pocketComputer");
+        if (dependency_CC) {
+            Dependency.cc_cable = GameRegistry.findItem(MODNAME_CC, "CC-Cable");
+            Dependency.cc_pocketComputer = GameRegistry.findItem(MODNAME_CC, "pocketComputer");
+        }
+        if (dependency_BuildCraft_Core) {
+            Dependency.bc_blockConstructionMarker = GameRegistry.findBlock(MODNAME_BUILDCRAFT_CORE, "markerBlock");
+            Dependency.bc_itemConstructionMarker = GameRegistry.findItem(MODNAME_BUILDCRAFT_CORE, "markerBlock");
         }
 
         // ================================================================
@@ -132,15 +147,44 @@ public class NichePeripherals {
             final String blockPrefix = ModInfo.ID.toLowerCase() + "_";
             
             // 拡張キューブ（Extension cube）
-            blockExtensionCube = (BlockExtensionCube)BlockEx.newInstance(BlockExtensionCube.class, blockPrefix + "extensionCube", creativeTab, sotogawaTexutureName, null);
+            blockExtensionCube = (BlockExtensionCube)BlockEx.newInstance(
+                    BlockExtensionCube.class,
+                    blockPrefix + "extensionCube",
+                    creativeTab,
+                    sotogawaTexutureName,
+                    null);
+
             // 全方位コンパレータ（All directional comparator）
-            blockAllDirectionalComparator = (BlockAllDirectionalComparator)BlockEx.newInstance(BlockAllDirectionalComparator.class, blockPrefix + "allDirectionalComparator", creativeTab, sotogawaTexutureName, blockExtensionCube);
+            blockAllDirectionalComparator = (BlockAllDirectionalComparator)BlockEx.newInstance(
+                    BlockAllDirectionalComparator.class,
+                    blockPrefix + "allDirectionalComparator",
+                    creativeTab,
+                    sotogawaTexutureName,
+                    blockExtensionCube);
+
             // メタプレーサ（Meta placer）
-            blockMetaPlacer = (BlockMetaPlacer)BlockEx.newInstance(BlockMetaPlacer.class, blockPrefix + "metaPlacer", creativeTab, sotogawaTexutureName, blockExtensionCube);
+            blockMetaPlacer = (BlockMetaPlacer)BlockEx.newInstance(
+                    BlockMetaPlacer.class,
+                    blockPrefix + "metaPlacer",
+                    creativeTab,
+                    sotogawaTexutureName,
+                    blockExtensionCube);
+
             // メタスキャナ（Meta scanner）
-            blockMetaScanner = (BlockMetaScanner)BlockEx.newInstance(BlockMetaScanner.class, blockPrefix + "metaScanner", creativeTab, sotogawaTexutureName, blockExtensionCube);
+            blockMetaScanner = (BlockMetaScanner)BlockEx.newInstance(
+                    BlockMetaScanner.class,
+                    blockPrefix + "metaScanner",
+                    creativeTab,
+                    sotogawaTexutureName,
+                    blockExtensionCube);
+            
             // モデムコントローラ（Modem controller）
-            blockModemController = (BlockModemController)BlockEx.newInstance(BlockModemController.class, blockPrefix + "modemController", creativeTab, sotogawaTexutureName, blockExtensionCube);
+            blockModemController = (BlockModemController)BlockEx.newInstance(
+                    BlockModemController.class,
+                    blockPrefix + "modemController",
+                    creativeTab,
+                    sotogawaTexutureName,
+                    blockExtensionCube);
         }
         
         // ================================================================
@@ -156,6 +200,7 @@ public class NichePeripherals {
                     renderID,
                     RenderEx.newInstance(RenderBlockExtensionCube.class, renderID, blockExtensionCube));
             blockExtensionCube.setRenderId(renderID);
+
             // ---------------------------------------
             // 全方位コンパレータ（All directional comparator）
             // ---------------------------------------
@@ -164,6 +209,7 @@ public class NichePeripherals {
                     renderID,
                     RenderEx.newInstance(RenderBlockAllDirectionalComparator.class, renderID, blockAllDirectionalComparator));
             blockAllDirectionalComparator.setRenderId(renderID);
+
             // ---------------------------------------
             // メタプレーサ（Meta placer）
             // ---------------------------------------
@@ -172,6 +218,7 @@ public class NichePeripherals {
                     renderID,
                     RenderEx.newInstance(RenderBlockMetaPlacer.class, renderID, blockMetaPlacer));
             blockMetaPlacer.setRenderId(renderID);
+
             // ---------------------------------------
             // メタスキャナ（Meta scanner）
             // ---------------------------------------
@@ -180,6 +227,7 @@ public class NichePeripherals {
                     renderID,
                     RenderEx.newInstance(RenderBlockMetaScanner.class, renderID, blockMetaScanner));
             blockMetaScanner.setRenderId(renderID);
+
             // ---------------------------------------
             // モデムコントローラ（Modem controller）
             // ---------------------------------------
@@ -220,10 +268,11 @@ public class NichePeripherals {
                 "xyx",
                 "xxx",
                 'x', Blocks.glass_pane,
-                'y', new ItemStack(cc_pocketComputer));
-        // ブロック破壊時の戻りアイテムを設定（ガラス板は戻らない）
+                'y', new ItemStack(Dependency.cc_pocketComputer));
+
+        // ブロック破壊時の戻りアイテムを設定（ポケットコンピュータが戻ってくる。ガラス板は戻らない）
         blockExtensionCube.setIngredients(new ItemStack[]{
-                new ItemStack(cc_pocketComputer) });
+                new ItemStack(Dependency.cc_pocketComputer) });
 
         // ---------------------------------------
         // 全方位コンパレータ（All directional comparator）
@@ -236,6 +285,7 @@ public class NichePeripherals {
                 "bbb",
                 'a', blockExtensionCube,
                 'b', Items.comparator);
+
         // ブロック破壊時の戻りアイテムを設定（全て戻るようにする）
         blockAllDirectionalComparator.setIngredients(new ItemStack[]{
                 new ItemStack(blockExtensionCube),
@@ -255,6 +305,7 @@ public class NichePeripherals {
                 'c', Items.comparator,
                 'd', Blocks.piston,
                 'e', Items.diamond_hoe);
+
         // ブロック破壊時の戻りアイテムを設定（全て戻るようにする）
         blockMetaPlacer.setIngredients(new ItemStack[]{
                 new ItemStack(blockExtensionCube),
@@ -275,6 +326,7 @@ public class NichePeripherals {
                 'a', blockExtensionCube,
                 'b', Items.compass,
                 'c', Items.comparator);
+        
         // ブロック破壊時の戻りアイテムを設定（全て戻るようにする）
         blockMetaScanner.setIngredients(new ItemStack[]{
                 new ItemStack(blockExtensionCube),
@@ -291,25 +343,45 @@ public class NichePeripherals {
                 "b e",
                 "ccd",
                 'a', blockExtensionCube,
-                'b', new ItemStack(cc_cable, 1, 1), // <- modem
-                'c', new ItemStack(cc_cable, 1, 0), // <- cable
+                'b', new ItemStack(Dependency.cc_cable, 1, 1), // <- modem
+                'c', new ItemStack(Dependency.cc_cable, 1, 0), // <- cable
                 'd', Items.iron_ingot,
                 'e', Items.gold_nugget);
+        
         // ブロック破壊時の戻りアイテムを設定（全て戻るようにする）
         blockModemController.setIngredients(new ItemStack[]{
                 new ItemStack(blockExtensionCube),
-                new ItemStack(cc_cable, 1, 1), // <- modem
-                new ItemStack(cc_cable, 2, 0), // <- cable
+                new ItemStack(Dependency.cc_cable, 1, 1), // <- modem
+                new ItemStack(Dependency.cc_cable, 2, 0), // <- cable
                 new ItemStack(Items.iron_ingot),
                 new ItemStack(Items.gold_nugget) });
 
         // ================================================================
         // Turtles
         // ================================================================
-        ComputerCraftAPI.registerTurtleUpgrade(PeripheralEx.newInstance(PeripheralAllDirectionalComparator.class, PID_ALL_DIRECTIONAL_COMPARATOR, blockAllDirectionalComparator, PeripheralAllDirectionalComparatorHosted.class));
-        ComputerCraftAPI.registerTurtleUpgrade(PeripheralEx.newInstance(PeripheralMetaPlacer.class, PID_META_PLACER, blockMetaPlacer, PeripheralMetaPlacerHosted.class));
-        ComputerCraftAPI.registerTurtleUpgrade(PeripheralEx.newInstance(PeripheralMetaScanner.class, PID_META_SCANNER, blockMetaScanner, PeripheralMetaScannerHosted.class));
-        ComputerCraftAPI.registerTurtleUpgrade(PeripheralEx.newInstance(PeripheralModemController.class, PID_MODEM_CONTROLLER, blockModemController, PeripheralModemControllerHosted.class));
+        ComputerCraftAPI.registerTurtleUpgrade(PeripheralEx.newInstance(
+                PeripheralAllDirectionalComparator.class,
+                PID_ALL_DIRECTIONAL_COMPARATOR,
+                blockAllDirectionalComparator,
+                PeripheralAllDirectionalComparatorHosted.class));
+
+        ComputerCraftAPI.registerTurtleUpgrade(PeripheralEx.newInstance(
+                PeripheralMetaPlacer.class,
+                PID_META_PLACER,
+                blockMetaPlacer,
+                PeripheralMetaPlacerHosted.class));
+        
+        ComputerCraftAPI.registerTurtleUpgrade(PeripheralEx.newInstance(
+                PeripheralMetaScanner.class,
+                PID_META_SCANNER,
+                blockMetaScanner,
+                PeripheralMetaScannerHosted.class));
+        
+        ComputerCraftAPI.registerTurtleUpgrade(PeripheralEx.newInstance(
+                PeripheralModemController.class,
+                PID_MODEM_CONTROLLER,
+                blockModemController,
+                PeripheralModemControllerHosted.class));
     }
     
     @EventHandler

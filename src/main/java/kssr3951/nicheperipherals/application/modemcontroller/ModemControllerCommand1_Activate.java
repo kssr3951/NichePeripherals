@@ -26,7 +26,7 @@ import net.minecraft.world.WorldServer;
  * この MOD は、Minecraft Mod Public License Japanese Transration (MMPL_J) Version 1.0.1 の条件のもとに配布されています。
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
-public class PeripheralModemControllerCommand1_Activate implements ITurtleCommand {
+public class ModemControllerCommand1_Activate implements ITurtleCommand {
 
     private int dir;
     private boolean activate;
@@ -41,7 +41,7 @@ public class PeripheralModemControllerCommand1_Activate implements ITurtleComman
     /** ケーブルしかない状態のメタ値 */
     private static final int META_CABLE_ONLY = 13;
     
-    public PeripheralModemControllerCommand1_Activate(TurtleSide side, int dir, boolean activate) {
+    public ModemControllerCommand1_Activate(TurtleSide side, int dir, boolean activate) {
 
         this.dir = dir;
         this.activate = activate;

@@ -1,7 +1,6 @@
-package kssr3951.nicheperipherals.application.extensioncube;
+package kssr3951.nicheperipherals.application.modemcontroller;
 
-import kssr3951.nicheperipherals.system.blocks.BlockEx;
-import net.minecraft.block.material.Material;
+import kssr3951.nicheperipherals.system.peripheral.TurtleUpgradeEx;
 
 /**
  * @author kssr3951
@@ -12,9 +11,8 @@ import net.minecraft.block.material.Material;
  * この MOD は、Minecraft Mod Public License Japanese Transration (MMPL_J) Version 1.0.1 の条件のもとに配布されています。
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
-public class BlockExtensionCube extends BlockEx {
+public class ModemControllerUpgrade extends TurtleUpgradeEx {
 
-    public BlockExtensionCube(Material material) {
-        super(material);
+    public ModemControllerUpgrade() {
     }
 }

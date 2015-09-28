@@ -1,6 +1,6 @@
-package kssr3951.nicheperipherals.application.alldirectionalcomparator;
+package kssr3951.nicheperipherals.application.metaplacer;
 
-import kssr3951.nicheperipherals.system.peripheral.PeripheralEx;
+import kssr3951.nicheperipherals.system.peripheral.TurtleUpgradeEx;
 
 /**
  * @author kssr3951
@@ -11,8 +11,8 @@ import kssr3951.nicheperipherals.system.peripheral.PeripheralEx;
  * この MOD は、Minecraft Mod Public License Japanese Transration (MMPL_J) Version 1.0.1 の条件のもとに配布されています。
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
-public class PeripheralAllDirectionalComparator extends PeripheralEx {
+public class MetaPlacerUpgrade extends TurtleUpgradeEx {
 
-    public PeripheralAllDirectionalComparator() {
+    public MetaPlacerUpgrade() {
     }
 }

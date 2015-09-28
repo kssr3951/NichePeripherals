@@ -6,7 +6,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleSide;
-import kssr3951.nicheperipherals.application.alldirectionalcomparator.PeripheralAllDirectionalComparatorCommand1_ExCompare.CommandVariation;
+import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorCommand1_ExCompare.CommandVariation;
 
 /**
  * @author kssr3951
@@ -17,11 +17,11 @@ import kssr3951.nicheperipherals.application.alldirectionalcomparator.Peripheral
  * この MOD は、Minecraft Mod Public License Japanese Transration (MMPL_J) Version 1.0.1 の条件のもとに配布されています。
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
-public class PeripheralAllDirectionalComparatorHosted implements IPeripheral {
+public class AllDirectionalComparatorPeripheral implements IPeripheral {
 
     private ITurtleAccess turtle;
 
-    public PeripheralAllDirectionalComparatorHosted(ITurtleAccess turtle, TurtleSide side) {
+    public AllDirectionalComparatorPeripheral(ITurtleAccess turtle, TurtleSide side) {
         this.turtle = turtle;
     }
 
@@ -40,7 +40,7 @@ public class PeripheralAllDirectionalComparatorHosted implements IPeripheral {
 
     @Override
     public boolean equals(IPeripheral other) {
-        return false;
+        return other != null && other.getClass() == getClass();
     }
 
     private String[] METHOD_NAMES = { "getName", "compareEx", "compareNegative", "comparePositive" };
@@ -61,19 +61,19 @@ public class PeripheralAllDirectionalComparatorHosted implements IPeripheral {
         }
         if ("compareEx".equals(METHOD_NAMES[method])) {
             return this.turtle.executeCommand(context,
-                    new PeripheralAllDirectionalComparatorCommand1_ExCompare(
+                    new AllDirectionalComparatorCommand1_ExCompare(
                             CommandVariation.COMPARE_EX,
                             arguments));
         }
         if ("compareNegative".equals(METHOD_NAMES[method])) {
             return this.turtle.executeCommand(context,
-                    new PeripheralAllDirectionalComparatorCommand1_ExCompare(
+                    new AllDirectionalComparatorCommand1_ExCompare(
                             CommandVariation.COMPARE_NEGATIVE,
                             arguments));
         }
         if ("comparePositive".equals(METHOD_NAMES[method])) {
             return this.turtle.executeCommand(context,
-                    new PeripheralAllDirectionalComparatorCommand1_ExCompare(
+                    new AllDirectionalComparatorCommand1_ExCompare(
                             CommandVariation.COMPARE_POSITIVE,
                             arguments));
         }

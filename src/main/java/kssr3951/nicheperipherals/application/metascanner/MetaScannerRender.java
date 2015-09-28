@@ -1,4 +1,4 @@
-package kssr3951.nicheperipherals.application.metaplacer;
+package kssr3951.nicheperipherals.application.metascanner;
 
 import kssr3951.nicheperipherals.system.render.RenderEx;
 import kssr3951.nicheperipherals.system.render.RenderHelper;
@@ -15,9 +15,9 @@ import net.minecraft.world.IBlockAccess;
  * この MOD は、Minecraft Mod Public License Japanese Transration (MMPL_J) Version 1.0.1 の条件のもとに配布されています。
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
-public class RenderBlockMetaPlacer extends RenderEx {
+public class MetaScannerRender extends RenderEx {
 
-    public RenderBlockMetaPlacer() {
+    public MetaScannerRender() {
     }
 
     // =====================================================================================

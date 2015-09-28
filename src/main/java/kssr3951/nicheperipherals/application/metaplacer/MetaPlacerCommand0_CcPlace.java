@@ -39,9 +39,9 @@ import net.minecraft.world.WorldServer;
 // Referenced classes of package dan200.computercraft.shared.turtle.core:
 //            InteractDirection, TurtleBrain, TurtlePlayer
 
-public class PeripheralMetaPlacerCommand0_CcPlace implements ITurtleCommand {
+public class MetaPlacerCommand0_CcPlace implements ITurtleCommand {
 
-    public PeripheralMetaPlacerCommand0_CcPlace(InteractDirection direction, Object arguments[]) {
+    public MetaPlacerCommand0_CcPlace(InteractDirection direction, Object arguments[]) {
         this.m_direction = direction;
         this.m_extraArguments = arguments;
     }

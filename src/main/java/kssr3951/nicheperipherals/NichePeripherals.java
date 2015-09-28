@@ -13,26 +13,30 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.ComputerCraftAPI;
-import kssr3951.nicheperipherals.application.alldirectionalcomparator.BlockAllDirectionalComparator;
-import kssr3951.nicheperipherals.application.alldirectionalcomparator.PeripheralAllDirectionalComparator;
-import kssr3951.nicheperipherals.application.alldirectionalcomparator.PeripheralAllDirectionalComparatorHosted;
-import kssr3951.nicheperipherals.application.alldirectionalcomparator.RenderBlockAllDirectionalComparator;
-import kssr3951.nicheperipherals.application.extensioncube.BlockExtensionCube;
-import kssr3951.nicheperipherals.application.extensioncube.RenderBlockExtensionCube;
-import kssr3951.nicheperipherals.application.metaplacer.BlockMetaPlacer;
-import kssr3951.nicheperipherals.application.metaplacer.PeripheralMetaPlacer;
-import kssr3951.nicheperipherals.application.metaplacer.PeripheralMetaPlacerHosted;
-import kssr3951.nicheperipherals.application.metaplacer.RenderBlockMetaPlacer;
-import kssr3951.nicheperipherals.application.metascanner.BlockMetaScanner;
-import kssr3951.nicheperipherals.application.metascanner.PeripheralMetaScanner;
-import kssr3951.nicheperipherals.application.metascanner.PeripheralMetaScannerHosted;
-import kssr3951.nicheperipherals.application.metascanner.RenderBlockMetaScanner;
-import kssr3951.nicheperipherals.application.modemcontroller.BlockModemController;
-import kssr3951.nicheperipherals.application.modemcontroller.PeripheralModemController;
-import kssr3951.nicheperipherals.application.modemcontroller.PeripheralModemControllerHosted;
-import kssr3951.nicheperipherals.application.modemcontroller.RenderBlockModemController;
+import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorBlock;
+import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorUpgrade;
+import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorPeripheral;
+import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorRender;
+import kssr3951.nicheperipherals.application.extensioncube.ExtensionCubeBlock;
+import kssr3951.nicheperipherals.application.extensioncube.ExtensionCubeRender;
+import kssr3951.nicheperipherals.application.metaplacer.MetaPlacerBlock;
+import kssr3951.nicheperipherals.application.metaplacer.MetaPlacerUpgrade;
+import kssr3951.nicheperipherals.application.metaplacer.MetaPlacerPeripheral;
+import kssr3951.nicheperipherals.application.metaplacer.MetaPlacerRender;
+import kssr3951.nicheperipherals.application.metascanner.MetaScannerBlock;
+import kssr3951.nicheperipherals.application.metascanner.MetaScannerUpgrade;
+import kssr3951.nicheperipherals.application.metascanner.MetaScannerPeripheral;
+import kssr3951.nicheperipherals.application.metascanner.MetaScannerRender;
+import kssr3951.nicheperipherals.application.modemcontroller.ModemControllerBlock;
+import kssr3951.nicheperipherals.application.modemcontroller.ModemControllerUpgrade;
+import kssr3951.nicheperipherals.application.modemcontroller.ModemControllerPeripheral;
+import kssr3951.nicheperipherals.application.modemcontroller.ModemControllerRender;
+import kssr3951.nicheperipherals.application.sclclient.SclClientBlock;
+import kssr3951.nicheperipherals.application.sclclient.SclClientUpgrade;
+import kssr3951.nicheperipherals.application.sclclient.SclClientPeripheral;
+import kssr3951.nicheperipherals.application.sclclient.SclClientRender;
 import kssr3951.nicheperipherals.system.blocks.BlockEx;
-import kssr3951.nicheperipherals.system.peripheral.PeripheralEx;
+import kssr3951.nicheperipherals.system.peripheral.TurtleUpgradeEx;
 import kssr3951.nicheperipherals.system.proxy.ProxyClient;
 import kssr3951.nicheperipherals.system.proxy.ProxyCommon;
 import kssr3951.nicheperipherals.system.render.RenderEx;
@@ -42,6 +46,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.config.Configuration;
 
 /**
@@ -71,6 +77,7 @@ public class NichePeripherals {
     public static class Dependency {
         public static Item cc_cable;
         public static Item cc_pocketComputer;
+        public static Block cc_turtle;
         public static Block bc_blockConstructionMarker;
         public static Item bc_itemConstructionMarker;
     }
@@ -81,17 +88,20 @@ public class NichePeripherals {
     private static int PID_META_PLACER;
     private static int PID_META_SCANNER;
     private static int PID_MODEM_CONTROLLER;
+    private static int PID_SCL_CLIENT;
     
     /** 拡張キューブ（Extension cube） */
-    private static BlockExtensionCube blockExtensionCube = null;
+    private static ExtensionCubeBlock blockExtensionCube = null;
     /** 全方位コンパレータ（All directional comparator） */
-    private static BlockAllDirectionalComparator blockAllDirectionalComparator = null;
+    private static AllDirectionalComparatorBlock blockAllDirectionalComparator = null;
     /** メタプレーサ（Meta placer） */
-    private static BlockMetaPlacer blockMetaPlacer = null;
+    private static MetaPlacerBlock blockMetaPlacer = null;
     /** メタスキャナ（Meta scanner） */
-    private static BlockMetaScanner blockMetaScanner = null;
+    private static MetaScannerBlock blockMetaScanner = null;
     /** モデムコントローラ（Modem controller） */
-    private static BlockModemController blockModemController = null;
+    private static ModemControllerBlock blockModemController = null;
+    /** SCLクライアント(SCL client) */
+    private static SclClientBlock blockSclClient = null;
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -112,6 +122,7 @@ public class NichePeripherals {
         PID_META_PLACER                = cfg.get("upgrade", "metaPlacer",               1701).getInt();
         PID_META_SCANNER               = cfg.get("upgrade", "metaScanner",              1702).getInt();
         PID_MODEM_CONTROLLER           = cfg.get("upgrade", "modemController",          1703).getInt();
+        PID_SCL_CLIENT                 = cfg.get("upgrade", "sclClient",                1704).getInt();
         cfg.save();
         
         // ================================================================
@@ -133,6 +144,7 @@ public class NichePeripherals {
         if (dependency_CC) {
             Dependency.cc_cable = GameRegistry.findItem(MODNAME_CC, "CC-Cable");
             Dependency.cc_pocketComputer = GameRegistry.findItem(MODNAME_CC, "pocketComputer");
+            Dependency.cc_turtle = GameRegistry.findBlock(MODNAME_CC, "CC-Turtle");
         }
         if (dependency_BuildCraft_Core) {
             Dependency.bc_blockConstructionMarker = GameRegistry.findBlock(MODNAME_BUILDCRAFT_CORE, "markerBlock");
@@ -147,41 +159,49 @@ public class NichePeripherals {
             final String blockPrefix = ModInfo.ID.toLowerCase() + "_";
             
             // 拡張キューブ（Extension cube）
-            blockExtensionCube = (BlockExtensionCube)BlockEx.newInstance(
-                    BlockExtensionCube.class,
+            blockExtensionCube = (ExtensionCubeBlock)BlockEx.newInstance(
+                    ExtensionCubeBlock.class,
                     blockPrefix + "extensionCube",
                     creativeTab,
                     sotogawaTexutureName,
                     null);
 
             // 全方位コンパレータ（All directional comparator）
-            blockAllDirectionalComparator = (BlockAllDirectionalComparator)BlockEx.newInstance(
-                    BlockAllDirectionalComparator.class,
+            blockAllDirectionalComparator = (AllDirectionalComparatorBlock)BlockEx.newInstance(
+                    AllDirectionalComparatorBlock.class,
                     blockPrefix + "allDirectionalComparator",
                     creativeTab,
                     sotogawaTexutureName,
                     blockExtensionCube);
 
             // メタプレーサ（Meta placer）
-            blockMetaPlacer = (BlockMetaPlacer)BlockEx.newInstance(
-                    BlockMetaPlacer.class,
+            blockMetaPlacer = (MetaPlacerBlock)BlockEx.newInstance(
+                    MetaPlacerBlock.class,
                     blockPrefix + "metaPlacer",
                     creativeTab,
                     sotogawaTexutureName,
                     blockExtensionCube);
 
             // メタスキャナ（Meta scanner）
-            blockMetaScanner = (BlockMetaScanner)BlockEx.newInstance(
-                    BlockMetaScanner.class,
+            blockMetaScanner = (MetaScannerBlock)BlockEx.newInstance(
+                    MetaScannerBlock.class,
                     blockPrefix + "metaScanner",
                     creativeTab,
                     sotogawaTexutureName,
                     blockExtensionCube);
             
             // モデムコントローラ（Modem controller）
-            blockModemController = (BlockModemController)BlockEx.newInstance(
-                    BlockModemController.class,
+            blockModemController = (ModemControllerBlock)BlockEx.newInstance(
+                    ModemControllerBlock.class,
                     blockPrefix + "modemController",
+                    creativeTab,
+                    sotogawaTexutureName,
+                    blockExtensionCube);
+            
+            // SCLクライアント(SCL client)
+            blockSclClient = (SclClientBlock)BlockEx.newInstance(
+                    SclClientBlock.class,
+                    blockPrefix + "sclClient",
                     creativeTab,
                     sotogawaTexutureName,
                     blockExtensionCube);
@@ -198,7 +218,7 @@ public class NichePeripherals {
             renderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(
                     renderID,
-                    RenderEx.newInstance(RenderBlockExtensionCube.class, renderID, blockExtensionCube));
+                    RenderEx.newInstance(ExtensionCubeRender.class, renderID, blockExtensionCube));
             blockExtensionCube.setRenderId(renderID);
 
             // ---------------------------------------
@@ -207,7 +227,7 @@ public class NichePeripherals {
             renderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(
                     renderID,
-                    RenderEx.newInstance(RenderBlockAllDirectionalComparator.class, renderID, blockAllDirectionalComparator));
+                    RenderEx.newInstance(AllDirectionalComparatorRender.class, renderID, blockAllDirectionalComparator));
             blockAllDirectionalComparator.setRenderId(renderID);
 
             // ---------------------------------------
@@ -216,7 +236,7 @@ public class NichePeripherals {
             renderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(
                     renderID,
-                    RenderEx.newInstance(RenderBlockMetaPlacer.class, renderID, blockMetaPlacer));
+                    RenderEx.newInstance(MetaPlacerRender.class, renderID, blockMetaPlacer));
             blockMetaPlacer.setRenderId(renderID);
 
             // ---------------------------------------
@@ -225,7 +245,7 @@ public class NichePeripherals {
             renderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(
                     renderID,
-                    RenderEx.newInstance(RenderBlockMetaScanner.class, renderID, blockMetaScanner));
+                    RenderEx.newInstance(MetaScannerRender.class, renderID, blockMetaScanner));
             blockMetaScanner.setRenderId(renderID);
 
             // ---------------------------------------
@@ -234,14 +254,25 @@ public class NichePeripherals {
             renderID = RenderingRegistry.getNextAvailableRenderId();
             RenderingRegistry.registerBlockHandler(
                     renderID,
-                    RenderEx.newInstance(RenderBlockModemController.class, renderID, blockModemController));
+                    RenderEx.newInstance(ModemControllerRender.class, renderID, blockModemController));
             blockModemController.setRenderId(renderID);
+
+            // ---------------------------------------
+            // SCLクライアント(SCL client)
+            // ---------------------------------------
+            renderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(
+                    renderID,
+                    RenderEx.newInstance(SclClientRender.class, renderID, blockSclClient));
+            blockSclClient.setRenderId(renderID);
+        
         } else {
             blockExtensionCube.setRenderId(-1);
             blockAllDirectionalComparator.setRenderId(-1);
             blockMetaPlacer.setRenderId(-1);
             blockMetaScanner.setRenderId(-1);
             blockModemController.setRenderId(-1);
+            blockSclClient.setRenderId(-1);
         }
 
         // ================================================================
@@ -252,6 +283,7 @@ public class NichePeripherals {
         GameRegistry.registerBlock(blockMetaPlacer,               blockMetaPlacer.getBlockName());
         GameRegistry.registerBlock(blockMetaScanner,              blockMetaScanner.getBlockName());
         GameRegistry.registerBlock(blockModemController,          blockModemController.getBlockName());
+        GameRegistry.registerBlock(blockSclClient,                blockSclClient.getBlockName());
         
         // ================================================================
         // Creative Tab
@@ -356,32 +388,79 @@ public class NichePeripherals {
                 new ItemStack(Items.iron_ingot),
                 new ItemStack(Items.gold_nugget) });
 
+        // ---------------------------------------
+        // SCLクライアント(SCL client)
+        // ---------------------------------------
+        // 製作レシピ（キューブ＋（◆未定◆））
+        GameRegistry.addRecipe(
+                new ItemStack(blockModemController),
+                "ab ",
+                "   ",
+                "   ",
+                'a', blockExtensionCube,
+                'b', Items.iron_ingot);
+        
+        // ブロック破壊時の戻りアイテムを設定（全て戻るようにする）
+        blockModemController.setIngredients(new ItemStack[]{
+                new ItemStack(blockExtensionCube),
+                new ItemStack(Items.iron_ingot) });
+        
         // ================================================================
         // Turtles
         // ================================================================
-        ComputerCraftAPI.registerTurtleUpgrade(PeripheralEx.newInstance(
-                PeripheralAllDirectionalComparator.class,
+        ComputerCraftAPI.registerTurtleUpgrade(TurtleUpgradeEx.newInstance(
+                AllDirectionalComparatorUpgrade.class,
                 PID_ALL_DIRECTIONAL_COMPARATOR,
                 blockAllDirectionalComparator,
-                PeripheralAllDirectionalComparatorHosted.class));
+                AllDirectionalComparatorPeripheral.class));
 
-        ComputerCraftAPI.registerTurtleUpgrade(PeripheralEx.newInstance(
-                PeripheralMetaPlacer.class,
+        ComputerCraftAPI.registerTurtleUpgrade(TurtleUpgradeEx.newInstance(
+                MetaPlacerUpgrade.class,
                 PID_META_PLACER,
                 blockMetaPlacer,
-                PeripheralMetaPlacerHosted.class));
+                MetaPlacerPeripheral.class));
         
-        ComputerCraftAPI.registerTurtleUpgrade(PeripheralEx.newInstance(
-                PeripheralMetaScanner.class,
+        ComputerCraftAPI.registerTurtleUpgrade(TurtleUpgradeEx.newInstance(
+                MetaScannerUpgrade.class,
                 PID_META_SCANNER,
                 blockMetaScanner,
-                PeripheralMetaScannerHosted.class));
+                MetaScannerPeripheral.class));
         
-        ComputerCraftAPI.registerTurtleUpgrade(PeripheralEx.newInstance(
-                PeripheralModemController.class,
+        ComputerCraftAPI.registerTurtleUpgrade(TurtleUpgradeEx.newInstance(
+                ModemControllerUpgrade.class,
                 PID_MODEM_CONTROLLER,
                 blockModemController,
-                PeripheralModemControllerHosted.class));
+                ModemControllerPeripheral.class));
+
+        ComputerCraftAPI.registerTurtleUpgrade(TurtleUpgradeEx.newInstance(
+                SclClientUpgrade.class,
+                PID_SCL_CLIENT,
+                blockSclClient,
+                SclClientPeripheral.class));
+
+        // ================================================================
+        // サバイバル環境テスト用のボーナスチェスト
+        // ================================================================
+        ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST).addItem(new WeightedRandomChestContent(
+                new ItemStack(blockAllDirectionalComparator), 64, 64, 100));
+        ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST).addItem(new WeightedRandomChestContent(
+                new ItemStack(blockMetaPlacer), 64, 64, 100));
+        ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST).addItem(new WeightedRandomChestContent(
+                new ItemStack(blockMetaScanner), 64, 64, 100));
+        ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST).addItem(new WeightedRandomChestContent(
+                new ItemStack(blockModemController), 64, 64, 100));
+        ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST).addItem(new WeightedRandomChestContent(
+                new ItemStack(blockSclClient), 64, 64, 100));
+        ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST).addItem(new WeightedRandomChestContent(
+                new ItemStack(Dependency.cc_turtle), 64, 64, 100));
+        ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST).addItem(new WeightedRandomChestContent(
+                new ItemStack(Items.diamond), 64, 64, 100));
+        ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST).addItem(new WeightedRandomChestContent(
+                new ItemStack(Blocks.planks), 64, 64, 100));
+        ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST).addItem(new WeightedRandomChestContent(
+                new ItemStack(Blocks.coal_block), 64, 64, 100));
+        ChestGenHooks.getInfo(ChestGenHooks.BONUS_CHEST).addItem(new WeightedRandomChestContent(
+                new ItemStack(Items.cooked_beef), 64, 64, 100));
     }
     
     @EventHandler

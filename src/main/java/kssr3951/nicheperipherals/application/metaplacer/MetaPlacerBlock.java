@@ -1,4 +1,4 @@
-package kssr3951.nicheperipherals.application.alldirectionalcomparator;
+package kssr3951.nicheperipherals.application.metaplacer;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,9 +16,9 @@ import net.minecraft.client.renderer.texture.IIconRegister;
  * この MOD は、Minecraft Mod Public License Japanese Transration (MMPL_J) Version 1.0.1 の条件のもとに配布されています。
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
-public class BlockAllDirectionalComparator extends BlockEx {
+public class MetaPlacerBlock extends BlockEx {
 
-    public BlockAllDirectionalComparator(Material material) {
+    public MetaPlacerBlock(Material material) {
         super(material);
     }
 
@@ -29,6 +29,6 @@ public class BlockAllDirectionalComparator extends BlockEx {
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister)
     {
-        this.peripheralIcon = iconRegister.registerIcon(Const.TEXTURE_PREFIX + "allDirectionalComparator");
+        this.peripheralIcon = iconRegister.registerIcon(Const.TEXTURE_PREFIX + "metaPlacer");
     }
 }

@@ -4,3 +4,4 @@ tile.nicheperipherals_allDirectionalComparator.name=All Directional Comparator
 tile.nicheperipherals_metaPlacer.name=Meta Placer
 tile.nicheperipherals_metaScanner.name=Meta Scanner
 tile.nicheperipherals_modemController.name=Modem Controller
+tile.nicheperipherals_sclClient.name=SCL Client

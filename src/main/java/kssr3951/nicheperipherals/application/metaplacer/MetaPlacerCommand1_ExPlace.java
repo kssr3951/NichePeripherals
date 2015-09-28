@@ -6,7 +6,7 @@ import java.util.List;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.ITurtleCommand;
 import dan200.computercraft.api.turtle.TurtleCommandResult;
-import kssr3951.nicheperipherals.application.metascanner.PeripheralMetaScanner;
+import kssr3951.nicheperipherals.application.metascanner.MetaScannerUpgrade;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -24,7 +24,7 @@ import net.minecraft.util.Facing;
  * この MOD は、Minecraft Mod Public License Japanese Transration (MMPL_J) Version 1.0.1 の条件のもとに配布されています。
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
-public class PeripheralMetaPlacerCommand1_ExPlace implements ITurtleCommand {
+public class MetaPlacerCommand1_ExPlace implements ITurtleCommand {
 
     private int dir;
     private Object[] arguments;
@@ -32,7 +32,7 @@ public class PeripheralMetaPlacerCommand1_ExPlace implements ITurtleCommand {
     private String scannedBlockName;
     private int scannedMetadata;
 
-    public PeripheralMetaPlacerCommand1_ExPlace(int dir, Object[] arguments) {
+    public MetaPlacerCommand1_ExPlace(int dir, Object[] arguments) {
 
         this.dir = dir;
         this.arguments = arguments;
@@ -81,7 +81,7 @@ public class PeripheralMetaPlacerCommand1_ExPlace implements ITurtleCommand {
     private int findMatchedMetadata(Block block, String argScanCode, int maxMeta) {
         int matchedMetadata = -1;
         for (int i = 0; i <= 15; i++) {
-            String test = PeripheralMetaScanner.getHashForDetectorTurtle(block, i);
+            String test = MetaScannerUpgrade.getHashForDetectorTurtle(block, i);
             if (argScanCode.equals(test)) {
                 matchedMetadata = i;
                 break;

@@ -16,9 +16,9 @@ import net.minecraft.client.renderer.texture.IIconRegister;
  * この MOD は、Minecraft Mod Public License Japanese Transration (MMPL_J) Version 1.0.1 の条件のもとに配布されています。
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
-public class BlockMetaScanner extends BlockEx {
+public class MetaScannerBlock extends BlockEx {
 
-    public BlockMetaScanner(Material material) {
+    public MetaScannerBlock(Material material) {
         super(material);
     }
 

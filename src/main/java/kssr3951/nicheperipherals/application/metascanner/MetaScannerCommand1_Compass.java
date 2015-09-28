@@ -13,12 +13,12 @@ import dan200.computercraft.api.turtle.TurtleCommandResult;
  * この MOD は、Minecraft Mod Public License Japanese Transration (MMPL_J) Version 1.0.1 の条件のもとに配布されています。
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
-public class PeripheralMetaScannerCommand1_Compass implements ITurtleCommand {
+public class MetaScannerCommand1_Compass implements ITurtleCommand {
 
     private int compassCode;
     private int dir;
 
-    public PeripheralMetaScannerCommand1_Compass(int dir) {
+    public MetaScannerCommand1_Compass(int dir) {
         this.dir = dir;
     }
 

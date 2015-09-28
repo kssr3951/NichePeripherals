@@ -23,7 +23,7 @@ import net.minecraft.util.IIcon;
  * この MOD は、Minecraft Mod Public License Japanese Transration (MMPL_J) Version 1.0.1 の条件のもとに配布されています。
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
-public abstract class PeripheralEx implements ITurtleUpgrade  {
+public abstract class TurtleUpgradeEx implements ITurtleUpgrade  {
 
     protected int pID;
     protected String unlocalisedAdjective;
@@ -32,12 +32,12 @@ public abstract class PeripheralEx implements ITurtleUpgrade  {
     protected Class iPeripheralClass;
     
     @SuppressWarnings("unchecked")
-    public static PeripheralEx newInstance(@SuppressWarnings("rawtypes") Class peripheralExClass, int pID, BlockEx blockEx, @SuppressWarnings("rawtypes") Class iPeripheralClass) {
-        PeripheralEx pEx = null;
+    public static TurtleUpgradeEx newInstance(@SuppressWarnings("rawtypes") Class peripheralExClass, int pID, BlockEx blockEx, @SuppressWarnings("rawtypes") Class iPeripheralClass) {
+        TurtleUpgradeEx pEx = null;
         try {
             @SuppressWarnings({ "rawtypes" })
             Constructor ct = peripheralExClass.getConstructor();
-            pEx = (PeripheralEx) ct.newInstance();
+            pEx = (TurtleUpgradeEx) ct.newInstance();
         } catch (InstantiationException e) {
             e.printStackTrace();
             return null;
@@ -80,7 +80,7 @@ public abstract class PeripheralEx implements ITurtleUpgrade  {
     }
 
     @Override
-    public final IPeripheral createPeripheral(ITurtleAccess turtle, TurtleSide side) {
+    public IPeripheral createPeripheral(ITurtleAccess turtle, TurtleSide side) {
         IPeripheral peripheral = null;
         try {
             @SuppressWarnings({ "unchecked", "rawtypes" })

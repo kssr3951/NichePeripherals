@@ -34,14 +34,14 @@ import net.minecraftforge.common.util.ForgeDirection;
  * この MOD は、Minecraft Mod Public License Japanese Transration (MMPL_J) Version 1.0.1 の条件のもとに配布されています。
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
-public class PeripheralAllDirectionalComparatorCommand1_ExCompare implements ITurtleCommand {
+public class AllDirectionalComparatorCommand1_ExCompare implements ITurtleCommand {
 
     public enum CommandVariation { COMPARE_EX, COMPARE_NEGATIVE, COMPARE_POSITIVE }
 
     private CommandVariation variation;
     private Object[] arguments;
 
-    public PeripheralAllDirectionalComparatorCommand1_ExCompare(CommandVariation variation, Object[] arguments) {
+    public AllDirectionalComparatorCommand1_ExCompare(CommandVariation variation, Object[] arguments) {
         this.variation = variation;
         this.arguments = arguments;
     }

@@ -19,7 +19,7 @@ import net.minecraft.util.Facing;
  * この MOD は、Minecraft Mod Public License Japanese Transration (MMPL_J) Version 1.0.1 の条件のもとに配布されています。
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
-public class PeripheralMetaScannerCommand2_Scan implements ITurtleCommand {
+public class MetaScannerCommand2_Scan implements ITurtleCommand {
 
     private TurtleSide side;
     private int dir;
@@ -29,7 +29,7 @@ public class PeripheralMetaScannerCommand2_Scan implements ITurtleCommand {
 
     private String scanCode;
 
-    public PeripheralMetaScannerCommand2_Scan(TurtleSide side, int dir) {
+    public MetaScannerCommand2_Scan(TurtleSide side, int dir) {
         this.side = side;
         this.dir = dir;
     }
@@ -79,7 +79,7 @@ public class PeripheralMetaScannerCommand2_Scan implements ITurtleCommand {
         }
 
         System.out.println("[NichePeripherals scan]block=" + block.getUnlocalizedName() + " /metadata=" + metadata);
-        scanCode = PeripheralMetaScanner.getHashForDetectorTurtle(block, metadata);
+        scanCode = MetaScannerUpgrade.getHashForDetectorTurtle(block, metadata);
 
         if(turtle.getWorld().isAirBlock(newX, newY, newZ)) {
             return TurtleCommandResult.failure("no scan target");

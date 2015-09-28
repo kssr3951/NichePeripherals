@@ -16,7 +16,7 @@ import dan200.computercraft.api.turtle.TurtleSide;
  * この MOD は、Minecraft Mod Public License Japanese Transration (MMPL_J) Version 1.0.1 の条件のもとに配布されています。
  * ライセンスの内容は次のサイトを確認してください。 http://tsoft-web.com/nokiyen/minecraft/modding/MMPL_J
  */
-public class PeripheralModemControllerHosted implements IPeripheral {
+public class ModemControllerPeripheral implements IPeripheral {
 
     private ITurtleAccess turtle;
     private TurtleSide side;
@@ -24,7 +24,7 @@ public class PeripheralModemControllerHosted implements IPeripheral {
     private static final int DIR_UP = 1;
     private static final int DIR_DOWN = 0;
 
-    public PeripheralModemControllerHosted(ITurtleAccess turtle, TurtleSide side) {
+    public ModemControllerPeripheral(ITurtleAccess turtle, TurtleSide side) {
         this.turtle = turtle;
         this.side = side;
     }
@@ -44,7 +44,7 @@ public class PeripheralModemControllerHosted implements IPeripheral {
 
     @Override
     public boolean equals(IPeripheral other) {
-        return false;
+        return other != null && other.getClass() == getClass();
     }
 
     private static final String[] METHOD_NAMES = new String[] { "getName", "activate", "activateUp", "activateDown" };
@@ -90,7 +90,7 @@ public class PeripheralModemControllerHosted implements IPeripheral {
                 return new Object[] {false, "Expected boolean" };
             }
         }
-        PeripheralModemControllerCommand1_Activate cmd = new PeripheralModemControllerCommand1_Activate(this.side, dir, activate);
+        ModemControllerCommand1_Activate cmd = new ModemControllerCommand1_Activate(this.side, dir, activate);
         Object[] rslt = this.turtle.executeCommand(context, cmd);
         if ("".equals(cmd.getMessageWhenSuccess())) {
             return rslt;

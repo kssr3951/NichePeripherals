@@ -20,4 +20,18 @@ public class Const {
     public static final String SIDE_TEXT_BOTTOM = "bottom";
     
     public static final String TEXTURE_PREFIX = ModInfo.ID.toLowerCase() + ":";
+    
+    /** net.minecraft.util.Facing用の定数  */
+    public static final int F0_DOWN = 0;
+    /** net.minecraft.util.Facing用の定数  */
+    public static final int F1_UP = 1;
+    /** net.minecraft.util.Facing用の定数  */
+    public static final int F2_NORTH = 2;
+    /** net.minecraft.util.Facing用の定数  */
+    public static final int F3_SOUTH = 3;
+    /** net.minecraft.util.Facing用の定数  */
+    public static final int F4_WEST = 4;
+    /** net.minecraft.util.Facing用の定数  */
+    public static final int F5_EAST = 5;
+    
 }

@@ -5,3 +5,4 @@ tile.nicheperipherals_metaPlacer.name=メタプレーサ
 tile.nicheperipherals_metaScanner.name=メタスキャナ
 tile.nicheperipherals_modemController.name=モデムコントローラ
 tile.nicheperipherals_sclClient.name=SCLクライアント
+tile.nicheperipherals_rayTracer.name=レイトレーサ

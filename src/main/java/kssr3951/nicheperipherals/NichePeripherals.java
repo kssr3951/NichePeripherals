@@ -14,27 +14,31 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.ComputerCraftAPI;
 import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorBlock;
-import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorUpgrade;
 import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorPeripheral;
 import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorRender;
+import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorUpgrade;
 import kssr3951.nicheperipherals.application.extensioncube.ExtensionCubeBlock;
 import kssr3951.nicheperipherals.application.extensioncube.ExtensionCubeRender;
 import kssr3951.nicheperipherals.application.metaplacer.MetaPlacerBlock;
-import kssr3951.nicheperipherals.application.metaplacer.MetaPlacerUpgrade;
 import kssr3951.nicheperipherals.application.metaplacer.MetaPlacerPeripheral;
 import kssr3951.nicheperipherals.application.metaplacer.MetaPlacerRender;
+import kssr3951.nicheperipherals.application.metaplacer.MetaPlacerUpgrade;
 import kssr3951.nicheperipherals.application.metascanner.MetaScannerBlock;
-import kssr3951.nicheperipherals.application.metascanner.MetaScannerUpgrade;
 import kssr3951.nicheperipherals.application.metascanner.MetaScannerPeripheral;
 import kssr3951.nicheperipherals.application.metascanner.MetaScannerRender;
+import kssr3951.nicheperipherals.application.metascanner.MetaScannerUpgrade;
 import kssr3951.nicheperipherals.application.modemcontroller.ModemControllerBlock;
-import kssr3951.nicheperipherals.application.modemcontroller.ModemControllerUpgrade;
 import kssr3951.nicheperipherals.application.modemcontroller.ModemControllerPeripheral;
 import kssr3951.nicheperipherals.application.modemcontroller.ModemControllerRender;
+import kssr3951.nicheperipherals.application.modemcontroller.ModemControllerUpgrade;
+import kssr3951.nicheperipherals.application.raytracer.RayTracerBlock;
+import kssr3951.nicheperipherals.application.raytracer.RayTracerPeripheral;
+import kssr3951.nicheperipherals.application.raytracer.RayTracerRender;
+import kssr3951.nicheperipherals.application.raytracer.RayTracerUpgrade;
 import kssr3951.nicheperipherals.application.sclclient.SclClientBlock;
-import kssr3951.nicheperipherals.application.sclclient.SclClientUpgrade;
 import kssr3951.nicheperipherals.application.sclclient.SclClientPeripheral;
 import kssr3951.nicheperipherals.application.sclclient.SclClientRender;
+import kssr3951.nicheperipherals.application.sclclient.SclClientUpgrade;
 import kssr3951.nicheperipherals.system.blocks.BlockEx;
 import kssr3951.nicheperipherals.system.peripheral.TurtleUpgradeEx;
 import kssr3951.nicheperipherals.system.proxy.ProxyClient;
@@ -89,6 +93,7 @@ public class NichePeripherals {
     private static int PID_META_SCANNER;
     private static int PID_MODEM_CONTROLLER;
     private static int PID_SCL_CLIENT;
+    private static int PID_RAY_TRACER;
     
     /** 拡張キューブ（Extension cube） */
     private static ExtensionCubeBlock blockExtensionCube = null;
@@ -102,6 +107,8 @@ public class NichePeripherals {
     private static ModemControllerBlock blockModemController = null;
     /** SCLクライアント(SCL client) */
     private static SclClientBlock blockSclClient = null;
+    /** レイトレーサ(Ray Tracer) */
+    private static RayTracerBlock blockRayTracer = null;
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -123,6 +130,7 @@ public class NichePeripherals {
         PID_META_SCANNER               = cfg.get("upgrade", "metaScanner",              1702).getInt();
         PID_MODEM_CONTROLLER           = cfg.get("upgrade", "modemController",          1703).getInt();
         PID_SCL_CLIENT                 = cfg.get("upgrade", "sclClient",                1704).getInt();
+        PID_RAY_TRACER                 = cfg.get("upgrade", "rayTracer",                1705).getInt();
         cfg.save();
         
         // ================================================================
@@ -205,6 +213,14 @@ public class NichePeripherals {
                     creativeTab,
                     sotogawaTexutureName,
                     blockExtensionCube);
+
+            // レイトレーサ(Ray tracer)
+            blockRayTracer = (RayTracerBlock)BlockEx.newInstance(
+                    RayTracerBlock.class,
+                    blockPrefix + "rayTracer",
+                    creativeTab,
+                    sotogawaTexutureName,
+                    blockExtensionCube);
         }
         
         // ================================================================
@@ -266,6 +282,15 @@ public class NichePeripherals {
                     RenderEx.newInstance(SclClientRender.class, renderID, blockSclClient));
             blockSclClient.setRenderId(renderID);
         
+            // ---------------------------------------
+            // レイトレーサ(Ray tracer)
+            // ---------------------------------------
+            renderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(
+                    renderID,
+                    RenderEx.newInstance(RayTracerRender.class, renderID, blockRayTracer));
+            blockRayTracer.setRenderId(renderID);
+
         } else {
             blockExtensionCube.setRenderId(-1);
             blockAllDirectionalComparator.setRenderId(-1);
@@ -273,6 +298,7 @@ public class NichePeripherals {
             blockMetaScanner.setRenderId(-1);
             blockModemController.setRenderId(-1);
             blockSclClient.setRenderId(-1);
+            blockRayTracer.setRenderId(-1);
         }
 
         // ================================================================
@@ -284,6 +310,7 @@ public class NichePeripherals {
         GameRegistry.registerBlock(blockMetaScanner,              blockMetaScanner.getBlockName());
         GameRegistry.registerBlock(blockModemController,          blockModemController.getBlockName());
         GameRegistry.registerBlock(blockSclClient,                blockSclClient.getBlockName());
+        GameRegistry.registerBlock(blockRayTracer,                blockRayTracer.getBlockName());
         
         // ================================================================
         // Creative Tab
@@ -401,9 +428,26 @@ public class NichePeripherals {
                 'b', Items.iron_ingot);
         
         // ブロック破壊時の戻りアイテムを設定（全て戻るようにする）
-        blockModemController.setIngredients(new ItemStack[]{
+        blockSclClient.setIngredients(new ItemStack[]{
                 new ItemStack(blockExtensionCube),
                 new ItemStack(Items.iron_ingot) });
+        
+        // ---------------------------------------
+        // レイトレーサ(Ray tracer)
+        // ---------------------------------------
+        // 製作レシピ（キューブ＋（◆未定◆））
+        GameRegistry.addRecipe(
+                new ItemStack(blockRayTracer),
+                "ab ",
+                "   ",
+                "   ",
+                'a', blockExtensionCube,
+                'b', Items.diamond);
+        
+        // ブロック破壊時の戻りアイテムを設定（全て戻るようにする）
+        blockRayTracer.setIngredients(new ItemStack[]{
+                new ItemStack(blockExtensionCube),
+                new ItemStack(Items.diamond) });
         
         // ================================================================
         // Turtles
@@ -437,6 +481,12 @@ public class NichePeripherals {
                 PID_SCL_CLIENT,
                 blockSclClient,
                 SclClientPeripheral.class));
+
+        ComputerCraftAPI.registerTurtleUpgrade(TurtleUpgradeEx.newInstance(
+                RayTracerUpgrade.class,
+                PID_RAY_TRACER,
+                blockRayTracer,
+                RayTracerPeripheral.class));
 
         // ================================================================
         // サバイバル環境テスト用のボーナスチェスト

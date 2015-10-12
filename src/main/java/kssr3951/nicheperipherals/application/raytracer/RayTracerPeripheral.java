@@ -27,9 +27,15 @@ public class RayTracerPeripheral implements IPeripheral {
      */
     private double baselineLength = 1.0;
     /**
-     * タートルの中心（x, z）を軸とした、ray発射位置のy軸の回転角度。時計回り方向が＋。タートルの中心から真横に出ている状態が0度で、－45度から＋45度まで。（それ以上はタートル本体を回転させてください。）
+     * 方位角。タートルの中心を軸として-45度から＋45度まで調整可能。それ以上の角度が必要な場合はタートル本体を回転させてください。
      */
     private double azimuth = 0;
+    /**
+     * 仰角。タートルの中心を軸として-45度から＋45度まで調整可能。それ以上の角度が必要な場合はrayTraceUp()、rayTraceDown()を使ってください。
+     * @param turtle
+     * @param side
+     */
+    private double elevation = 0;
 
     public RayTracerPeripheral(ITurtleAccess turtle, TurtleSide side) {
         this.turtle = turtle;
@@ -56,7 +62,7 @@ public class RayTracerPeripheral implements IPeripheral {
 
     private Object[] setBaselineLength(double baselineLength) {
         if (baselineLength < 1.0 || 10.0 < baselineLength) {
-            return new Object[]{ false, "cannot set. (min:1.0, max:10.0)" };
+            return new Object[]{ false, "cannot set " + baselineLength + ". (min:1.0, max:10.0)" };
         } else {
             this.baselineLength = baselineLength;
             return new Object[]{ true };
@@ -65,15 +71,30 @@ public class RayTracerPeripheral implements IPeripheral {
     
     private Object[] setAzimuth(double azimuth) {
         if (azimuth < -45.0 || 45.0 < azimuth) {
-            return new Object[]{ false, "cannot set. (min:-45.0, max:45.0)" };
+            return new Object[]{ false, "cannot set " + azimuth + ". (min:-45.0, max:45.0)" };
         } else {
             this.azimuth = azimuth;
             return new Object[]{ true };
         }
     }
 
-    private String[] METHOD_NAMES_LEFT = { "getName", "rayTrace", "rayTraceUp", "rayTraceDown", "rayTraceLeft", "setBaselineLength", "setAzimuth" };
-    private String[] METHOD_NAMES_RIGHT = { "getName", "rayTrace", "rayTraceUp", "rayTraceDown", "rayTraceRight", "setBaselineLength", "setAzimuth" };
+    private Object[] setElevation(double elevation) {
+        if (elevation < -45.0 || 45.0 < elevation) {
+            return new Object[]{ false, "cannot set " + elevation + ". (min:-45.0, max:45.0)" };
+        } else {
+            this.elevation = elevation;
+            return new Object[]{ true };
+        }
+    }
+
+    private String[] METHOD_NAMES_LEFT = {
+            "getName", "rayTrace", "rayTraceUp", "rayTraceDown", "rayTraceLeft",
+            "setBaselineLength", "setAzimuth", "setElevation",
+            "getBaselineLength", "getAzimuth", "getElevation" };
+    private String[] METHOD_NAMES_RIGHT = {
+            "getName", "rayTrace", "rayTraceUp", "rayTraceDown", "rayTraceRight",
+            "setBaselineLength", "setAzimuth", "setElevation",
+            "getBaselineLength", "getAzimuth", "getElevation" };
     @Override
     public String[] getMethodNames() {
         if (TurtleSide.Left == this.side) {
@@ -98,37 +119,50 @@ public class RayTracerPeripheral implements IPeripheral {
         }
         if ("rayTrace".equals(METHOD_NAMES[method])) {
             return this.turtle.executeCommand(context, new RayTracerCommand1_RayTrace(
-                    this.side, CommandDirection.FORWARD, baselineLength, azimuth, args));
+                    this.side, CommandDirection.FORWARD, baselineLength, azimuth, elevation, args));
         }
         if ("rayTraceUp".equals(METHOD_NAMES[method])) {
             return this.turtle.executeCommand(context, new RayTracerCommand1_RayTrace(
-                    this.side, CommandDirection.UP, baselineLength, azimuth, args));
+                    this.side, CommandDirection.UP, baselineLength, azimuth, elevation, args));
         }
         if ("rayTraceDown".equals(METHOD_NAMES[method])) {
             return this.turtle.executeCommand(context, new RayTracerCommand1_RayTrace(
-                    this.side, CommandDirection.DOWN, baselineLength, azimuth, args));
+                    this.side, CommandDirection.DOWN, baselineLength, azimuth, elevation, args));
         }
         if ("rayTraceLeft".equals(METHOD_NAMES[method])) {
             return this.turtle.executeCommand(context, new RayTracerCommand1_RayTrace(
-                    this.side, CommandDirection.LEFT, baselineLength, azimuth, args));
+                    this.side, CommandDirection.LEFT, baselineLength, azimuth, elevation, args));
         }
         if ("rayTraceRight".equals(METHOD_NAMES[method])) {
             return this.turtle.executeCommand(context, new RayTracerCommand1_RayTrace(
-                    this.side, CommandDirection.RIGHT, baselineLength, azimuth, args));
+                    this.side, CommandDirection.RIGHT, baselineLength, azimuth, elevation, args));
         }
         if ("setBaselineLength".equals(METHOD_NAMES[method])) {
             if (null == args || 1 != args.length || !(args[0] instanceof Double)) {
                 return new Object[] { false, "Expected double" };
             }
-            setBaselineLength((Double)args[0]);
-            return new Object[] { true };
+            return setBaselineLength((Double)args[0]);
         }
         if ("setAzimuth".equals(METHOD_NAMES[method])) {
             if (null == args || 1 != args.length || !(args[0] instanceof Double)) {
                 return new Object[] { false, "Expected double" };
             }
-            setAzimuth((Double)args[0]);
-            return new Object[] { true };
+            return setAzimuth((Double)args[0]);
+        }
+        if ("setElevation".equals(METHOD_NAMES[method])) {
+            if (null == args || 1 != args.length || !(args[0] instanceof Double)) {
+                return new Object[] { false, "Expected double" };
+            }
+            return setElevation((Double)args[0]);
+        }
+        if ("getBaselineLength".equals(METHOD_NAMES[method])) {
+            return new Object[]{ this.baselineLength };
+        }
+        if ("getAzimuth".equals(METHOD_NAMES[method])) {
+            return new Object[] { this.azimuth };
+        }
+        if ("getElevation".equals(METHOD_NAMES[method])) {
+            return new Object[]{ this.elevation };
         }
         return new Object[] {false, "unknown command" };
     }

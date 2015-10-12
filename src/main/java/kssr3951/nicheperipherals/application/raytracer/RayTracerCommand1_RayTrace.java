@@ -17,7 +17,6 @@ import dan200.computercraft.api.turtle.TurtleCommandResult;
 import dan200.computercraft.api.turtle.TurtleSide;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Facing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -40,13 +39,15 @@ public class RayTracerCommand1_RayTrace implements ITurtleCommand {
     private CommandDirection direction;
     private double baselineLength;
     private double azimuth;
+    private double elevation;
     private Object[] args;
 
-    public RayTracerCommand1_RayTrace(TurtleSide side, CommandDirection direction, double baselineLength, double azimuth, Object[] args) {
+    public RayTracerCommand1_RayTrace(TurtleSide side, CommandDirection direction, double baselineLength, double azimuth, double elevation, Object[] args) {
         this.side = side;
         this.direction = direction;
         this.baselineLength = baselineLength;
         this.azimuth = azimuth;
+        this.elevation = elevation;
         this.args = args;
     }
 
@@ -54,7 +55,8 @@ public class RayTracerCommand1_RayTrace implements ITurtleCommand {
     @Override
     public TurtleCommandResult execute(ITurtleAccess turtle) {
         
-        System.out.println("RayTracerCommand1_RayTrace # execute()");
+        System.out.println();
+        //System.out.println("RayTracerCommand1_RayTrace # execute()");
         List<Vec3> vec3List = null;
         {
             if (null == this.args) {
@@ -63,7 +65,7 @@ public class RayTracerCommand1_RayTrace implements ITurtleCommand {
                 if (0 == args.length) {
                     // 引数なし
                     //   ～  コマンド名で指定された方向に１回だけRayTraceを実行する
-                    System.out.println("★引数なし");
+                    //System.out.println("★引数なし");
                     vec3List = new ArrayList<Vec3>();
                     vec3List.add(Vec3.createVectorHelper(0, 0, 1));
                 } else if (1 == args.length) {
@@ -73,18 +75,18 @@ public class RayTracerCommand1_RayTrace implements ITurtleCommand {
                     //   １個目　：　照射方向を指定する配列の配列
                     //           {{x1, y1, z1}, {x2, y2, z2},...}
                     //           (x, y, z) = (0, 0, 1)の場合、コマンド名で指定された方向に真っ直ぐRayが照射される。
-                    System.out.println("★引数１個");
-                    System.out.println("  １個目 ： " + this.args[0].getClass().getName());
+                    //System.out.println("★引数１個");
+                    //System.out.println("  １個目 ： " + this.args[0].getClass().getName());
                     if (!(this.args[0] instanceof HashMap)) {
-                        System.out.println("aaaaa<<< 1 >>>"); //◆
+                        //System.out.println("aaaaa<<< 1 >>>"); //◆
                         return TurtleCommandResult.failure("Expected table.");
                     }
                     vec3List = readVecArgument((HashMap) this.args[0]);
                     if (null == vec3List) {
-                        System.out.println("aaaaa<<< 2 >>>"); //◆
+                        //System.out.println("aaaaa<<< 2 >>>"); //◆
                         return TurtleCommandResult.failure("Expected {{x1, y1, z1}, {x2, y2, z2},...}.");
                     }
-                    System.out.println("aaaaa<<< 3 >>>"); //◆
+                    //System.out.println("aaaaa<<< 3 >>>"); //◆
                     
                 } else if (2 == args.length) {
                     // 引数２個
@@ -94,13 +96,13 @@ public class RayTracerCommand1_RayTrace implements ITurtleCommand {
                     //   １個目　：　光源からの距離
                     //   ２個目　：　平面上の点の位置の配列。{{x1, y1},{x2, y2},...}
                     //           点の座標が(x, y) = (0, 0)の場合、光源の位置から、コマンド名で指定された方向に真っ直ぐRayが照射される。
-                    System.out.println("★引数２個");
-                    System.out.println("  １個目 ： " + this.args[0].getClass().getName());
-                    System.out.println("  ２個目 ： " + this.args[1].getClass().getName());
+                    //System.out.println("★引数２個");
+                    //System.out.println("  １個目 ： " + this.args[0].getClass().getName());
+                    //System.out.println("  ２個目 ： " + this.args[1].getClass().getName());
                     if (!(this.args[0] instanceof Double && this.args[1] instanceof HashMap)) {
                         return TurtleCommandResult.failure("Expected double, table.");
                     }
-                    System.out.println("    ->" + (Double)this.args[0]);
+                    //System.out.println("    ->" + (Double)this.args[0]);
                     
                     vec3List = readVecArgument((HashMap) this.args[1]);
                     if (null == vec3List) {
@@ -114,50 +116,67 @@ public class RayTracerCommand1_RayTrace implements ITurtleCommand {
             }
         }
         
-        int dir;
-        
-        if (TurtleSide.Left == this.side) {
-            final int[] LEFT_TURN;
-            {
-                int[] tmpL = new int[6];
-                tmpL[F0_DOWN ] = F0_DOWN;
-                tmpL[F1_UP   ] = F1_UP;
-                tmpL[F2_NORTH] = F4_WEST;
-                tmpL[F3_SOUTH] = F5_EAST;
-                tmpL[F4_WEST ] = F3_SOUTH;
-                tmpL[F5_EAST ] = F2_NORTH;
-                LEFT_TURN = tmpL;
+        Vec3 rayStartRot;
+        Vec3 rayStartMov;
+        Vec3 rayStart;
+        {
+            int dir;
+            if (TurtleSide.Left == this.side) {
+                final int[] LEFT_TURN;
+                {
+                    int[] tmpL = new int[6];
+                    tmpL[F0_DOWN ] = F0_DOWN;
+                    tmpL[F1_UP   ] = F1_UP;
+                    tmpL[F2_NORTH] = F4_WEST;
+                    tmpL[F3_SOUTH] = F5_EAST;
+                    tmpL[F4_WEST ] = F3_SOUTH;
+                    tmpL[F5_EAST ] = F2_NORTH;
+                    LEFT_TURN = tmpL;
+                }
+                dir = LEFT_TURN[turtle.getDirection()];
+                
+            } else if (TurtleSide.Right == this.side) {
+                final int[] RIGHT_TURN;
+                {
+                    int[] tmpR = new int[6];
+                    tmpR[F0_DOWN ] = F1_UP;
+                    tmpR[F1_UP   ] = F0_DOWN;
+                    tmpR[F2_NORTH] = F5_EAST;
+                    tmpR[F3_SOUTH] = F4_WEST;
+                    tmpR[F4_WEST ] = F2_NORTH;
+                    tmpR[F5_EAST ] = F3_SOUTH;
+                    RIGHT_TURN = tmpR;
+                }
+                dir = RIGHT_TURN[turtle.getDirection()];
+                
+            } else {
+                return null;
             }
-            dir = LEFT_TURN[turtle.getDirection()];
-            
-        } else if (TurtleSide.Right == this.side) {
-            final int[] RIGHT_TURN;
-            {
-                int[] tmpR = new int[6];
-                tmpR[F0_DOWN ] = F1_UP;
-                tmpR[F1_UP   ] = F0_DOWN;
-                tmpR[F2_NORTH] = F5_EAST;
-                tmpR[F3_SOUTH] = F4_WEST;
-                tmpR[F4_WEST ] = F2_NORTH;
-                tmpR[F5_EAST ] = F3_SOUTH;
-                RIGHT_TURN = tmpR;
-            }
-            dir = RIGHT_TURN[turtle.getDirection()];
-            
-        } else {
-            System.out.println("adjust side else"); //◆
-            return null;
+            rayStartRot = Vec3.createVectorHelper(
+                    Facing.offsetsXForSide[dir] * this.baselineLength,
+                    Facing.offsetsYForSide[dir] * this.baselineLength,
+                    Facing.offsetsZForSide[dir] * this.baselineLength);
+            rayStartMov = Vec3.createVectorHelper(
+                    turtle.getPosition().posX + 0.5,
+                    turtle.getPosition().posY + 0.5,
+                    turtle.getPosition().posZ + 0.5);
+            rayStart = Vec3.createVectorHelper(
+                    rayStartMov.xCoord + rayStartRot.xCoord,
+                    rayStartMov.yCoord + rayStartRot.yCoord,
+                    rayStartMov.zCoord + rayStartRot.zCoord);
         }
-        Vec3 rayStart = Vec3.createVectorHelper(
-            turtle.getPosition().posX + 0.5 + Facing.offsetsXForSide[dir],
-            turtle.getPosition().posY + 0.5 + Facing.offsetsYForSide[dir],
-            turtle.getPosition().posZ + 0.5 + Facing.offsetsZForSide[dir]);
+        if (0 != this.azimuth) {
+            // 方位角の微調整
+            rayStartRot.rotateAroundY((float)(-1 * this.azimuth * Math.PI / 180));
+            rayStart = Vec3.createVectorHelper(
+                    rayStartMov.xCoord + rayStartRot.xCoord,
+                    rayStartMov.yCoord + rayStartRot.yCoord,
+                    rayStartMov.zCoord + rayStartRot.zCoord);
+        }
         
-        // System.out.println("  vec3List.size() = " + vec3List.size());
         List<Double> resultList = new ArrayList<Double>();
         for (int i = 0; i < vec3List.size(); i++) {
             Vec3 rayDir = vec3List.get(i);
-            
             // 以下の分岐の、FORWARDの場合について、
             //   turtle.getDirection() ⇒ {"DOWN", "UP", "NORTH", "SOUTH", "WEST", "EAST"};
             //   NORTH = 前進するとzが減少する。
@@ -165,7 +184,18 @@ public class RayTracerCommand1_RayTrace implements ITurtleCommand {
             //   WEST  = 前進するとxが減少する。 
             //   EAST  = 前進するとxが増加する。
             // ⇒ 南向きの場合は加工不要。それ以外の場合はY軸で回転させる。
-            final int[] ROT_FORWARD_90_COUNT = new int[]{ 0, 0, 2, 0, 3, 1 };
+            //final int[] ROT_FORWARD_90_COUNT = new int[]{ 0, 0, 2, 0, 3, 1 };
+            final int[] ROT_FORWARD_90_COUNT;
+            {
+                int[] tmpF = new int[6];
+                tmpF[F0_DOWN ] = 0;
+                tmpF[F1_UP   ] = 0;
+                tmpF[F2_NORTH] = 2;
+                tmpF[F3_SOUTH] = 0;
+                tmpF[F4_WEST ] = 3;
+                tmpF[F5_EAST ] = 1;
+                ROT_FORWARD_90_COUNT = tmpF;
+            }
             
             if (CommandDirection.FORWARD == this.direction) {
 
@@ -184,32 +214,41 @@ public class RayTracerCommand1_RayTrace implements ITurtleCommand {
             } else if (CommandDirection.UP == this.direction) {
 
                 switch (turtle.getDirection()) {
-                case 2: rayDir = rotateAroundX90(rayDir, 3); break; // NORTH
-                case 3: rayDir = rotateAroundX90(rayDir, 1); break; // SOUTH
-                case 4: rayDir = rotateAroundZ90(rayDir, 1); break; // WEST
-                case 5: rayDir = rotateAroundZ90(rayDir, 3); break; // EAST
+                case F2_NORTH: rayDir = rotateAroundX90(rayDir, 3); break;
+                case F3_SOUTH: rayDir = rotateAroundX90(rayDir, 1); break;
+                case F4_WEST:  rayDir = rotateAroundZ90(rayDir, 1); break;
+                case F5_EAST:  rayDir = rotateAroundZ90(rayDir, 3); break;
                 default: break; 
                 }
             } else if (CommandDirection.DOWN == this.direction) {
 
                 switch (turtle.getDirection()) {
-                case 2: rayDir = rotateAroundX90(rayDir, 1); break; // NORTH
-                case 3: rayDir = rotateAroundX90(rayDir, 3); break; // SOUTH
-                case 4: rayDir = rotateAroundZ90(rayDir, 3); break; // WEST
-                case 5: rayDir = rotateAroundZ90(rayDir, 1); break; // EAST
+                case F2_NORTH: rayDir = rotateAroundX90(rayDir, 1); break;
+                case F3_SOUTH: rayDir = rotateAroundX90(rayDir, 3); break;
+                case F4_WEST:  rayDir = rotateAroundZ90(rayDir, 3); break;
+                case F5_EAST:  rayDir = rotateAroundZ90(rayDir, 1); break;
                 default: break; 
                 }
             } else {
-                System.out.println("<<< 6 >>>");
                 return null;
             }
-
-            {
-                ChunkCoordinates cod = turtle.getPosition();
-                System.out.println("turtle  (x, y, z) = (" + cod.posX + ", " + cod.posY + ", " + cod.posZ + ")"); //◆
-                System.out.println("rayStart(x, y, z) = (" + rayStart.xCoord + ", " + rayStart.yCoord + ", " + rayStart.zCoord + ")"); //◆
-                System.out.println("rayDir  (x, y, z) = (" + rayDir.xCoord + ", " + rayDir.yCoord + ", " + rayDir.zCoord + ")"); //◆
+            
+            if (0 != this.elevation) {
+                // 仰角の微調整
+                switch (turtle.getDirection()) {
+                case F2_NORTH: rayDir.rotateAroundX((float)(  this.elevation * Math.PI / 180)); break;
+                case F3_SOUTH: rayDir.rotateAroundX((float)(- this.elevation * Math.PI / 180)); break;
+                case F4_WEST:  rayDir.rotateAroundZ((float)(- this.elevation * Math.PI / 180)); break;
+                case F5_EAST:  rayDir.rotateAroundZ((float)(  this.elevation * Math.PI / 180)); break;
+                default: break; 
+                }
             }
+
+            if (0 != this.azimuth) {
+                // 方位角の微調整
+                rayDir.rotateAroundY((float)(-1 * this.azimuth * Math.PI / 180));
+            }
+
             double distance = rayTrace(turtle.getWorld(), rayStart, rayDir);
             resultList.add(distance);
         }
@@ -218,35 +257,23 @@ public class RayTracerCommand1_RayTrace implements ITurtleCommand {
 
     private static double rayTrace(World world, Vec3 vecStart, Vec3 vecDir) {
         {
-          boolean hit = false;
-          Vec3 vS = vecStart.addVector(0, 0, 0);
-          Vec3 vecEnd = null;
-          double dist = 0.5;
-          for (int i = 0; i < 512; i++) { // てきとう
-              vecEnd = vS.addVector(vecDir.xCoord * dist, vecDir.yCoord * dist, vecDir.zCoord * dist);
-              // ブロック
-              {
-                  MovingObjectPosition result = world.rayTraceBlocks(vS.addVector(0, 0, 0), vecEnd.addVector(0, 0, 0));
+            Vec3 vS = vecStart.addVector(0, 0, 0);
+            Vec3 vecEnd = null;
+            double dist = 0.5;
+            for (int i = 0; i < 512; i++) { // てきとう
+                vecEnd = vS.addVector(vecDir.xCoord * dist, vecDir.yCoord * dist, vecDir.zCoord * dist);
+                // ブロック
+                {
+                    MovingObjectPosition result = world.rayTraceBlocks(vS.addVector(0, 0, 0), vecEnd.addVector(0, 0, 0));
 
-                  if (result != null && result.typeOfHit == net.minecraft.util.MovingObjectPosition.MovingObjectType.BLOCK) {
-                      double hitDistance = vecStart.distanceTo(result.hitVec);
-                      System.out.println("==========================================================");
-                      System.out.println("== Block found!!");
-                      System.out.println("==========================================================");
-                      System.out.println("  rayTraceENtities|1|hit. hitDistance = " + hitDistance); //◆
-                      System.out.println("  rayTraceENtities|4|hit. vecStart = (x, y, z) = ("
-                              + vecStart.xCoord + ", " + vecStart.yCoord + ", " + vecStart.zCoord + ")"); //◆
-                      System.out.println("  rayTraceENtities|5|hit. vS       = (x, y, z) = ("
-                              + vS.xCoord + ", " + vS.yCoord + ", " + vS.zCoord + ")"); //◆
-                      System.out.println("  rayTraceENtities|6|hit. hitVec   = (x, y, z) = ("
-                              + result.hitVec.xCoord + ", " + result.hitVec.yCoord + ", " + result.hitVec.zCoord + ")"); //◆
-                      hit = true;
-                      return hitDistance;
-                  }
-              }
-              // エンティティ
-              {
-                  AxisAlignedBB bigBox = AxisAlignedBB.getBoundingBox(
+                    if (result != null && result.typeOfHit == net.minecraft.util.MovingObjectPosition.MovingObjectType.BLOCK) {
+                        double hitDistance = vecStart.distanceTo(result.hitVec);
+                        return hitDistance;
+                    }
+                }
+                // エンティティ
+                {
+                    AxisAlignedBB bigBox = AxisAlignedBB.getBoundingBox(
                           vS.xCoord - 0.4,
                           vS.yCoord - 0.4,
                           vS.zCoord - 0.4,
@@ -254,49 +281,41 @@ public class RayTracerCommand1_RayTrace implements ITurtleCommand {
                           vS.yCoord + 0.4,
                           vS.zCoord + 0.4);
 
-                  Entity closest = null;
-                  double closestDist = 99D; // てきとう
-                  @SuppressWarnings("rawtypes")
-                  List list = world.getEntitiesWithinAABBExcludingEntity(null, bigBox);
-                  for (int j = 0; j < list.size(); j++) {
-                      Entity entity = (Entity) list.get(j);
-                      if (!entity.canBeCollidedWith()) {
-                          continue;
-                      }
-                      AxisAlignedBB littleBox = entity.boundingBox;
-                      if (littleBox.isVecInside(vS)) {
-                          closest = entity;
-                          closestDist = 0.0D;
-                          continue;
-                      }
-                      MovingObjectPosition littleBoxResult = littleBox.calculateIntercept(vS, vecEnd);
-                      if (littleBoxResult != null) {
-                          double dd = vecStart.distanceTo(littleBoxResult.hitVec);
-                          if (closest == null || dd <= closestDist) {
-                              closest = entity;
-                              closestDist = dd;
-                          }
-                          continue;
-                      }
-                      if (littleBox.intersectsWith(bigBox) && closest == null) {
-                          closest = entity;
-                          closestDist = vecStart.distanceTo(vS);
-                      }
-                  }
-                  if (closest != null && closestDist < 256D) { // てきとう
-                      System.out.println("==========================================================");
-                      System.out.println("== Entity found!!");
-                      System.out.println("==========================================================");
-                      System.out.println("  Entity distance = " + closestDist);
-                      hit = true;
-                      return closestDist;
-                  }
-              }
-              vS = vS.addVector(vecDir.xCoord * dist, vecDir.yCoord * dist, vecDir.zCoord * dist);
-          }
-          if (!hit) {
-              System.out.println("  not found");
-          }
+                    Entity closest = null;
+                    double closestDist = 99D; // てきとう
+                    @SuppressWarnings("rawtypes")
+                    List list = world.getEntitiesWithinAABBExcludingEntity(null, bigBox);
+                    for (int j = 0; j < list.size(); j++) {
+                        Entity entity = (Entity) list.get(j);
+                        if (!entity.canBeCollidedWith()) {
+                            continue;
+                        }
+                        AxisAlignedBB littleBox = entity.boundingBox;
+                        if (littleBox.isVecInside(vS)) {
+                            closest = entity;
+                            closestDist = 0.0D;
+                            continue;
+                        }
+                        MovingObjectPosition littleBoxResult = littleBox.calculateIntercept(vS, vecEnd);
+                        if (littleBoxResult != null) {
+                            double dd = vecStart.distanceTo(littleBoxResult.hitVec);
+                            if (closest == null || dd <= closestDist) {
+                                closest = entity;
+                                closestDist = dd;
+                            }
+                            continue;
+                        }
+                        if (littleBox.intersectsWith(bigBox) && closest == null) {
+                            closest = entity;
+                            closestDist = vecStart.distanceTo(vS);
+                        }
+                    }
+                    if (closest != null && closestDist < 256D) { // てきとう
+                        return closestDist;
+                    }
+                }
+                vS = vS.addVector(vecDir.xCoord * dist, vecDir.yCoord * dist, vecDir.zCoord * dist);
+            }
         }
         return 512D; // てきとう
     }
@@ -304,9 +323,8 @@ public class RayTracerCommand1_RayTrace implements ITurtleCommand {
     private List<Vec3> readVecArgument(@SuppressWarnings("rawtypes") HashMap h) {
         List<Vec3> rslt = new ArrayList<Vec3>();
         for (int i = 0; i < h.size(); i++) {
-            Object o = h.get(new Double(h.size() - i));
+            Object o = h.get(new Double(i + 1));
             if (!(o instanceof HashMap)) {
-                System.out.println("   readVecArgument<<< 1 >>>");
                 return null;
             }
             @SuppressWarnings("rawtypes")
@@ -315,7 +333,6 @@ public class RayTracerCommand1_RayTrace implements ITurtleCommand {
             for (int j = 0; j < h2.size(); j++) {
                 Object o2 = h2.get(new Double(j + 1));
                 if (!(o2 instanceof Double)) {
-                    System.out.println("   readVecArgument<<< 2 >>>");
                     return null;
                 } else {
                     tmp.add((Double) o2);
@@ -326,7 +343,6 @@ public class RayTracerCommand1_RayTrace implements ITurtleCommand {
             } else if(3 == tmp.size()) {
                 rslt.add(Vec3.createVectorHelper(tmp.get(0), tmp.get(1), tmp.get(2)));
             } else {
-                System.out.println("   readVecArgument<<< 3 >>>");
                 return null;
             }
         }

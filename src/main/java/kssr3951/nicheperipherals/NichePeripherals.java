@@ -13,6 +13,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.ComputerCraftAPI;
+import kssr3951.nicheperipherals.application.Const;
 import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorBlock;
 import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorPeripheral;
 import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorRender;
@@ -82,6 +83,7 @@ public class NichePeripherals {
         public static Item cc_cable;
         public static Item cc_pocketComputer;
         public static Block cc_turtle;
+        public static Block cc_computer;
         public static Block bc_blockConstructionMarker;
         public static Item bc_itemConstructionMarker;
     }
@@ -153,6 +155,7 @@ public class NichePeripherals {
             Dependency.cc_cable = GameRegistry.findItem(MODNAME_CC, "CC-Cable");
             Dependency.cc_pocketComputer = GameRegistry.findItem(MODNAME_CC, "pocketComputer");
             Dependency.cc_turtle = GameRegistry.findBlock(MODNAME_CC, "CC-Turtle");
+            Dependency.cc_computer = GameRegistry.findBlock(MODNAME_CC, "CC-Computer");
         }
         if (dependency_BuildCraft_Core) {
             Dependency.bc_blockConstructionMarker = GameRegistry.findBlock(MODNAME_BUILDCRAFT_CORE, "markerBlock");
@@ -164,12 +167,11 @@ public class NichePeripherals {
         // ================================================================
         {
             final String sotogawaTexutureName = TEXTURE_PREFIX + NichePeripherals.extendedBlocksName;
-            final String blockPrefix = ModInfo.ID.toLowerCase() + "_";
             
             // 拡張キューブ（Extension cube）
             blockExtensionCube = (ExtensionCubeBlock)BlockEx.newInstance(
                     ExtensionCubeBlock.class,
-                    blockPrefix + "extensionCube",
+                    Const.BLOCK_PREFIX + "extensionCube",
                     creativeTab,
                     sotogawaTexutureName,
                     null);
@@ -177,7 +179,7 @@ public class NichePeripherals {
             // 全方位コンパレータ（All directional comparator）
             blockAllDirectionalComparator = (AllDirectionalComparatorBlock)BlockEx.newInstance(
                     AllDirectionalComparatorBlock.class,
-                    blockPrefix + "allDirectionalComparator",
+                    Const.BLOCK_PREFIX + "allDirectionalComparator",
                     creativeTab,
                     sotogawaTexutureName,
                     blockExtensionCube);
@@ -185,7 +187,7 @@ public class NichePeripherals {
             // メタプレーサ（Meta placer）
             blockMetaPlacer = (MetaPlacerBlock)BlockEx.newInstance(
                     MetaPlacerBlock.class,
-                    blockPrefix + "metaPlacer",
+                    Const.BLOCK_PREFIX + "metaPlacer",
                     creativeTab,
                     sotogawaTexutureName,
                     blockExtensionCube);
@@ -193,7 +195,7 @@ public class NichePeripherals {
             // メタスキャナ（Meta scanner）
             blockMetaScanner = (MetaScannerBlock)BlockEx.newInstance(
                     MetaScannerBlock.class,
-                    blockPrefix + "metaScanner",
+                    Const.BLOCK_PREFIX + "metaScanner",
                     creativeTab,
                     sotogawaTexutureName,
                     blockExtensionCube);
@@ -201,7 +203,7 @@ public class NichePeripherals {
             // モデムコントローラ（Modem controller）
             blockModemController = (ModemControllerBlock)BlockEx.newInstance(
                     ModemControllerBlock.class,
-                    blockPrefix + "modemController",
+                    Const.BLOCK_PREFIX + "modemController",
                     creativeTab,
                     sotogawaTexutureName,
                     blockExtensionCube);
@@ -209,7 +211,7 @@ public class NichePeripherals {
             // SCLクライアント(SCL client)
             blockSclClient = (SclClientBlock)BlockEx.newInstance(
                     SclClientBlock.class,
-                    blockPrefix + "sclClient",
+                    Const.BLOCK_PREFIX + "sclClient",
                     creativeTab,
                     sotogawaTexutureName,
                     blockExtensionCube);
@@ -217,7 +219,7 @@ public class NichePeripherals {
             // レイトレーサ(Ray tracer)
             blockRayTracer = (RayTracerBlock)BlockEx.newInstance(
                     RayTracerBlock.class,
-                    blockPrefix + "rayTracer",
+                    Const.BLOCK_PREFIX + "rayTracer",
                     creativeTab,
                     sotogawaTexutureName,
                     blockExtensionCube);
@@ -435,19 +437,27 @@ public class NichePeripherals {
         // ---------------------------------------
         // レイトレーサ(Ray tracer)
         // ---------------------------------------
-        // 製作レシピ（キューブ＋（◆未定◆））
+        // 製作レシピ（キューブ＋レッドストーンｘ４＋レッドストーンコンパレータ―、日照センサー、ダイヤモンド、レッドストーンブロック）
         GameRegistry.addRecipe(
                 new ItemStack(blockRayTracer),
-                "ab ",
-                "   ",
-                "   ",
+                "abb",
+                "cde",
+                "fbb",
                 'a', blockExtensionCube,
-                'b', Items.diamond);
+                'b', Items.redstone,
+                'c', Items.comparator,
+                'd', Blocks.daylight_detector,
+                'e', Items.diamond,
+                'f', Blocks.redstone_block);
         
         // ブロック破壊時の戻りアイテムを設定（全て戻るようにする）
         blockRayTracer.setIngredients(new ItemStack[]{
                 new ItemStack(blockExtensionCube),
-                new ItemStack(Items.diamond) });
+                new ItemStack(Items.redstone, 4),
+                new ItemStack(Items.comparator),
+                new ItemStack(Blocks.daylight_detector),
+                new ItemStack(Items.diamond),
+                new ItemStack(Blocks.redstone_block)});
         
         // ================================================================
         // Turtles

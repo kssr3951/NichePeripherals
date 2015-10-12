@@ -21,6 +21,9 @@ public class Const {
     
     public static final String TEXTURE_PREFIX = ModInfo.ID.toLowerCase() + ":";
     
+    public static final String BLOCK_PREFIX = ModInfo.ID.toLowerCase() + "_";
+
+    
     /** net.minecraft.util.Facing用の定数  */
     public static final int F0_DOWN = 0;
     /** net.minecraft.util.Facing用の定数  */

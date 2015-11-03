@@ -18,6 +18,10 @@ import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirecti
 import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorPeripheral;
 import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorRender;
 import kssr3951.nicheperipherals.application.alldirectionalcomparator.AllDirectionalComparatorUpgrade;
+import kssr3951.nicheperipherals.application.enderstoragedyeingmachine.EnderStorageDyeingMachineBlock;
+import kssr3951.nicheperipherals.application.enderstoragedyeingmachine.EnderStorageDyeingMachinePeripheral;
+import kssr3951.nicheperipherals.application.enderstoragedyeingmachine.EnderStorageDyeingMachineRender;
+import kssr3951.nicheperipherals.application.enderstoragedyeingmachine.EnderStorageDyeingMachineUpgrade;
 import kssr3951.nicheperipherals.application.extensioncube.ExtensionCubeBlock;
 import kssr3951.nicheperipherals.application.extensioncube.ExtensionCubeRender;
 import kssr3951.nicheperipherals.application.metaplacer.MetaPlacerBlock;
@@ -79,6 +83,10 @@ public class NichePeripherals {
     private static final String MODNAME_BUILDCRAFT_CORE = "BuildCraft|Core";
     public static boolean dependency_BuildCraft_Core = false;
     
+    // EnderStorageとの連携（任意）
+    private static final String MODNAME_ENDER_STORAGE = "EnderStorage";
+    public static boolean dependency_EnderStorage = false;
+    
     public static class Dependency {
         public static Item cc_cable;
         public static Item cc_pocketComputer;
@@ -86,6 +94,7 @@ public class NichePeripherals {
         public static Block cc_computer;
         public static Block bc_blockConstructionMarker;
         public static Item bc_itemConstructionMarker;
+        public static Block es_enderStorage;
     }
     
     private static final String extendedBlocksName = "NichePeripheralsExtendedBlocks";
@@ -96,6 +105,7 @@ public class NichePeripherals {
     private static int PID_MODEM_CONTROLLER;
     private static int PID_SCL_CLIENT;
     private static int PID_RAY_TRACER;
+    private static int PID_ENDER_STORAGE_DYEING_MACHINE;
     
     /** 拡張キューブ（Extension cube） */
     private static ExtensionCubeBlock blockExtensionCube = null;
@@ -111,6 +121,8 @@ public class NichePeripherals {
     private static SclClientBlock blockSclClient = null;
     /** レイトレーサ(Ray Tracer) */
     private static RayTracerBlock blockRayTracer = null;
+    /** EnderStorage染色機(EnderStorage dyeing machine) */
+    private static EnderStorageDyeingMachineBlock blockEnderStorageDyeingMachine = null;
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -127,12 +139,13 @@ public class NichePeripherals {
         // ---------------------------------------
         // 周辺機器（peripheral）のID
         // ---------------------------------------
-        PID_ALL_DIRECTIONAL_COMPARATOR = cfg.get("upgrade", "allDirectionalComparator", 1700).getInt();
-        PID_META_PLACER                = cfg.get("upgrade", "metaPlacer",               1701).getInt();
-        PID_META_SCANNER               = cfg.get("upgrade", "metaScanner",              1702).getInt();
-        PID_MODEM_CONTROLLER           = cfg.get("upgrade", "modemController",          1703).getInt();
-        PID_SCL_CLIENT                 = cfg.get("upgrade", "sclClient",                1704).getInt();
-        PID_RAY_TRACER                 = cfg.get("upgrade", "rayTracer",                1705).getInt();
+        PID_ALL_DIRECTIONAL_COMPARATOR   = cfg.get("upgrade", "allDirectionalComparator",  1700).getInt();
+        PID_META_PLACER                  = cfg.get("upgrade", "metaPlacer",                1701).getInt();
+        PID_META_SCANNER                 = cfg.get("upgrade", "metaScanner",               1702).getInt();
+        PID_MODEM_CONTROLLER             = cfg.get("upgrade", "modemController",           1703).getInt();
+        PID_SCL_CLIENT                   = cfg.get("upgrade", "sclClient",                 1704).getInt();
+        PID_RAY_TRACER                   = cfg.get("upgrade", "rayTracer",                 1705).getInt();
+        PID_ENDER_STORAGE_DYEING_MACHINE = cfg.get("upgrade", "enderStorageDyeingMachine", 1706).getInt();
         cfg.save();
         
         // ================================================================
@@ -143,6 +156,12 @@ public class NichePeripherals {
         }
         if (Loader.isModLoaded(MODNAME_BUILDCRAFT_CORE)) {
             dependency_BuildCraft_Core = true;
+        }
+        if (Loader.isModLoaded(MODNAME_ENDER_STORAGE)) {
+            dependency_EnderStorage = true;
+            System.out.println("EnderStorage Loaded.");
+        } else {
+            System.out.println("EnderStorage NOT Loaded.");
         }
     }
 
@@ -160,6 +179,9 @@ public class NichePeripherals {
         if (dependency_BuildCraft_Core) {
             Dependency.bc_blockConstructionMarker = GameRegistry.findBlock(MODNAME_BUILDCRAFT_CORE, "markerBlock");
             Dependency.bc_itemConstructionMarker = GameRegistry.findItem(MODNAME_BUILDCRAFT_CORE, "markerBlock");
+        }
+        if (dependency_EnderStorage) {
+            Dependency.es_enderStorage = GameRegistry.findBlock(MODNAME_ENDER_STORAGE, "enderChest");
         }
 
         // ================================================================
@@ -220,6 +242,14 @@ public class NichePeripherals {
             blockRayTracer = (RayTracerBlock)BlockEx.newInstance(
                     RayTracerBlock.class,
                     Const.BLOCK_PREFIX + "rayTracer",
+                    creativeTab,
+                    sotogawaTexutureName,
+                    blockExtensionCube);
+
+            // EnderStorage染色機(EnderStorage dyeing machine)
+            blockEnderStorageDyeingMachine = (EnderStorageDyeingMachineBlock)BlockEx.newInstance(
+                    EnderStorageDyeingMachineBlock.class,
+                    Const.BLOCK_PREFIX + "enderStorageDyeingMachine",
                     creativeTab,
                     sotogawaTexutureName,
                     blockExtensionCube);
@@ -293,6 +323,15 @@ public class NichePeripherals {
                     RenderEx.newInstance(RayTracerRender.class, renderID, blockRayTracer));
             blockRayTracer.setRenderId(renderID);
 
+            // ---------------------------------------
+            // EnderStorage染色機(EnderStorage dyeing machine)
+            // ---------------------------------------
+            renderID = RenderingRegistry.getNextAvailableRenderId();
+            RenderingRegistry.registerBlockHandler(
+                    renderID,
+                    RenderEx.newInstance(EnderStorageDyeingMachineRender.class, renderID, blockEnderStorageDyeingMachine));
+            blockEnderStorageDyeingMachine.setRenderId(renderID);
+
         } else {
             blockExtensionCube.setRenderId(-1);
             blockAllDirectionalComparator.setRenderId(-1);
@@ -301,18 +340,20 @@ public class NichePeripherals {
             blockModemController.setRenderId(-1);
             blockSclClient.setRenderId(-1);
             blockRayTracer.setRenderId(-1);
+            blockEnderStorageDyeingMachine.setRenderId(-1);
         }
 
         // ================================================================
         // Blocks
         // ================================================================
-        GameRegistry.registerBlock(blockExtensionCube,            blockExtensionCube.getBlockName());
-        GameRegistry.registerBlock(blockAllDirectionalComparator, blockAllDirectionalComparator.getBlockName());
-        GameRegistry.registerBlock(blockMetaPlacer,               blockMetaPlacer.getBlockName());
-        GameRegistry.registerBlock(blockMetaScanner,              blockMetaScanner.getBlockName());
-        GameRegistry.registerBlock(blockModemController,          blockModemController.getBlockName());
-        GameRegistry.registerBlock(blockSclClient,                blockSclClient.getBlockName());
-        GameRegistry.registerBlock(blockRayTracer,                blockRayTracer.getBlockName());
+        GameRegistry.registerBlock(blockExtensionCube,             blockExtensionCube.getBlockName());
+        GameRegistry.registerBlock(blockAllDirectionalComparator,  blockAllDirectionalComparator.getBlockName());
+        GameRegistry.registerBlock(blockMetaPlacer,                blockMetaPlacer.getBlockName());
+        GameRegistry.registerBlock(blockMetaScanner,               blockMetaScanner.getBlockName());
+        GameRegistry.registerBlock(blockModemController,           blockModemController.getBlockName());
+        GameRegistry.registerBlock(blockSclClient,                 blockSclClient.getBlockName());
+        GameRegistry.registerBlock(blockRayTracer,                 blockRayTracer.getBlockName());
+        GameRegistry.registerBlock(blockEnderStorageDyeingMachine, blockEnderStorageDyeingMachine.getBlockName());
         
         // ================================================================
         // Creative Tab
@@ -459,6 +500,23 @@ public class NichePeripherals {
                 new ItemStack(Items.diamond),
                 new ItemStack(Blocks.redstone_block)});
         
+        // ---------------------------------------
+        // EnderStorage染色機(EnderStorage dyeing machine)
+        // ---------------------------------------
+        // 製作レシピ（キューブ＋（◆未定◆））
+        GameRegistry.addRecipe(
+                new ItemStack(blockEnderStorageDyeingMachine),
+                "ab ",
+                "   ",
+                "   ",
+                'a', blockExtensionCube,
+                'b', Items.gold_ingot);
+        
+        // ブロック破壊時の戻りアイテムを設定（全て戻るようにする）
+        blockSclClient.setIngredients(new ItemStack[]{
+                new ItemStack(blockExtensionCube),
+                new ItemStack(Items.gold_ingot) });
+
         // ================================================================
         // Turtles
         // ================================================================
@@ -497,6 +555,12 @@ public class NichePeripherals {
                 PID_RAY_TRACER,
                 blockRayTracer,
                 RayTracerPeripheral.class));
+
+        ComputerCraftAPI.registerTurtleUpgrade(TurtleUpgradeEx.newInstance(
+                EnderStorageDyeingMachineUpgrade.class,
+                PID_ENDER_STORAGE_DYEING_MACHINE,
+                blockEnderStorageDyeingMachine,
+                EnderStorageDyeingMachinePeripheral.class));
 
         // ================================================================
         // サバイバル環境テスト用のボーナスチェスト

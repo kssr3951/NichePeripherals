@@ -10,6 +10,7 @@ sourceSets.main {
 version = "1.0"
 dependencies {
   compile fileTree(dir: 'lib', include: 'ComputerCraft1.74.jar')
+  compile fileTree(dir: 'lib', include: 'EnderStorage-1.7.10-1.4.7.37-dev.jar')
 }
 
 // dependencies { compile project(':ProjectName')}

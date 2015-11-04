@@ -91,7 +91,7 @@ public class EnderStorageDyeingMachineCommand2_GetColor implements ITurtleComman
             if (1 == metadata) {
                 // EnderTankの場合
                 String tmp = colorNames[2];
-                colorNames[2] = colorNames[1];
+                colorNames[2] = colorNames[0];
                 colorNames[0] = tmp;
             }
             return TurtleCommandResult.success(colorNames);
